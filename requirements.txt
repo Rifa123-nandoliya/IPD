@@ -11,3 +11,4 @@ shap
 jupyter
 notebook
 ipykernel
+joblib

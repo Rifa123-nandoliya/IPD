@@ -91,18 +91,23 @@ The project follows the workflow below:
 - Correlation analysis
 - Missing-value analysis
 
-### Current Status
+Current progress:
 
-The data preparation and exploratory data analysis phases have been completed.
-
-The next phase will focus on:
-
-- Machine learning preprocessing
-- Baseline model development
-- Tree-based model development
-- Model evaluation
-- Hyperparameter tuning
-- SHAP-based explainability
+- Dataset loaded and verified
+- Institutional births selected
+- Candidate variables reviewed and verified
+- Target leakage variables excluded
+- DHS special codes investigated and cleaned
+- Final predictor set selected
+- Final modeling dataset created and validated
+- Exploratory Data Analysis (EDA) completed
+- Machine learning preprocessing pipeline completed
+- Respondent-level train-test split created
+- Missing-value handling and feature encoding implemented
+- Preprocessing artifacts generated
+- Baseline machine learning model development is the next stage
+- SHAP explainability is pending
+- Research paper preparation is pending
 
 ---
 
