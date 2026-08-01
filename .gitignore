@@ -1,8 +1,10 @@
-# Raw Data
+# Raw and processed data
 data/
 
 *.dta
 *.sav
+*.csv
+*.parquet
 
 # Python
 __pycache__/
@@ -39,4 +41,3 @@ dist/
 # Model files
 *.pkl
 *.joblib
-

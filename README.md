@@ -65,14 +65,16 @@ Current progress:
 
 - Dataset loaded and verified
 - Institutional births selected
-- Feature selection completed
-- Data cleaning rules finalized
-- Building the final modeling dataset
-- Exploratory Data Analysis (EDA)
-- Machine learning model development
-- SHAP explainability
-- Research paper preparation
-
+- Candidate variables reviewed and verified
+- Target leakage variables excluded
+- DHS special codes investigated and cleaned
+- Final predictor set selected
+- Final modeling dataset created and validated
+- Processed dataset saved locally as a Parquet file
+- Exploratory Data Analysis (EDA) is the next stage
+- Machine learning model development is pending
+- SHAP explainability is pending
+- Research paper preparation is pending
 ---
 
 ## Technologies
