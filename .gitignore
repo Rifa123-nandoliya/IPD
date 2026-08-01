@@ -1,4 +1,3 @@
-# Raw and processed data
 data/
 
 *.dta
@@ -6,38 +5,29 @@ data/
 *.csv
 *.parquet
 
-# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Virtual Environments
 .venv/
 venv/
 env/
 
-# Jupyter
 .ipynb_checkpoints/
 
-# Operating System Files
 .DS_Store
 Thumbs.db
 
-# VS Code
 .vscode/
 
-# Logs
 *.log
 
-# Python environment variables
 .env
 
-# Build artifacts
 build/
 dist/
 *.egg-info/
 
-# Model files
 *.pkl
 *.joblib

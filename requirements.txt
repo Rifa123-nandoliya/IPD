@@ -4,8 +4,10 @@ pyreadstat
 pyarrow
 matplotlib
 seaborn
+scipy
 scikit-learn
 xgboost
 shap
 jupyter
 notebook
+ipykernel

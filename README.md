@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project aims to develop an explainable machine learning model for predicting whether an institutional delivery in India will result in a Cesarean section. The model is built using data from the National Family Health Survey-5 (NFHS-5) and emphasizes careful feature selection, data preprocessing, and SHAP-based model interpretability to understand the factors associated with Cesarean section delivery.
+This project develops an explainable machine learning model to predict whether an institutional delivery in India will result in a Cesarean section using data from the National Family Health Survey-5 (NFHS-5). The project emphasizes careful feature selection, rigorous data preprocessing, exploratory data analysis, and SHAP-based model interpretability to identify the factors associated with Cesarean section delivery.
 
 ---
 
@@ -11,30 +11,35 @@ This project aims to develop an explainable machine learning model for predictin
 The main objectives of this project are:
 
 - Predict the likelihood of Cesarean section delivery using maternal, socioeconomic, obstetric, antenatal care, and pregnancy-related factors.
-- Identify the key predictors associated with Cesarean delivery.
-- Build an interpretable machine learning model using SHAP.
-- Compare the influence of demographic, clinical, and healthcare-related factors on the prediction.
+- Identify the most important predictors associated with Cesarean section delivery.
+- Develop interpretable machine learning models using SHAP.
+- Compare the influence of demographic, clinical, and healthcare-related factors on prediction performance.
 
 ---
 
 ## Dataset
 
-This project uses the **National Family Health Survey-5 (NFHS-5) Birth Recode (BR) dataset**, which is provided through the DHS Program.
+This project uses the **National Family Health Survey-5 (NFHS-5) Birth Recode (BR) dataset**, provided through the DHS Program.
 
 The original NFHS-5 dataset is **not included** in this repository because it is distributed under the DHS Program data usage agreement.
 
-Anyone wishing to reproduce this work must request access to the dataset directly from the DHS Program and obtain the necessary permissions before downloading it.
+Anyone wishing to reproduce this work must request access directly from the DHS Program and comply with all applicable data usage policies.
 
 ---
 
 ## Project Structure
 
 ```text
-├── data/               # Raw and processed data (ignored from Git)
-├── notebooks/          # Jupyter notebooks
-├── src/                # Python source code
-├── outputs/            # Figures, plots, model outputs
-├── docs/               # Proposal and references
+.
+├── data/
+│   ├── raw/                  # Original NFHS-5 data (ignored)
+│   └── processed/            # Processed datasets (ignored)
+├── notebooks/
+│   ├── 01_data_preparation.ipynb
+│   └── 02_exploratory_data_analysis.ipynb
+├── src/
+├── outputs/
+├── docs/
 ├── requirements.txt
 ├── README.md
 └── .gitignore
@@ -47,34 +52,58 @@ Anyone wishing to reproduce this work must request access to the dataset directl
 The project follows the workflow below:
 
 1. Data acquisition
-2. Study population selection (institutional births)
-3. Feature selection and variable verification
-4. Data cleaning and preprocessing
-5. Exploratory Data Analysis (EDA)
-6. Feature engineering
-7. Machine learning model development
-8. Model evaluation
-9. SHAP-based explainability
-10. Interpretation of results
+2. Study population selection (institutional deliveries)
+3. Manual feature selection
+4. Variable verification
+5. Target leakage analysis
+6. Data cleaning and preprocessing
+7. Exploratory Data Analysis (EDA)
+8. Statistical analysis
+9. Correlation and missing-value analysis
+10. Machine learning model development
+11. Model evaluation
+12. SHAP-based explainability
+13. Interpretation of results
 
 ---
 
-## Project Status
+## Project Progress
 
-Current progress:
+### Completed
 
-- Dataset loaded and verified
-- Institutional births selected
-- Candidate variables reviewed and verified
-- Target leakage variables excluded
-- DHS special codes investigated and cleaned
-- Final predictor set selected
-- Final modeling dataset created and validated
-- Processed dataset saved locally as a Parquet file
-- Exploratory Data Analysis (EDA) is the next stage
-- Machine learning model development is pending
-- SHAP explainability is pending
-- Research paper preparation is pending
+- Project definition
+- NFHS-5 dataset loading and metadata verification
+- Institutional delivery selection
+- Manual feature selection
+- Target leakage identification and removal
+- Variable verification
+- Data cleaning and preprocessing
+- Anthropometric variable cleaning
+- ANC variable cleaning
+- Final predictor selection
+- Final modeling dataset creation
+- Dataset verification
+- Data type conversion
+- Processed Parquet dataset generation
+- Exploratory Data Analysis (EDA)
+- Statistical comparison of numeric variables
+- Statistical comparison of categorical variables
+- Correlation analysis
+- Missing-value analysis
+
+### Current Status
+
+The data preparation and exploratory data analysis phases have been completed.
+
+The next phase will focus on:
+
+- Machine learning preprocessing
+- Baseline model development
+- Tree-based model development
+- Model evaluation
+- Hyperparameter tuning
+- SHAP-based explainability
+
 ---
 
 ## Technologies
@@ -85,11 +114,13 @@ The project is being developed using:
 - Pandas
 - NumPy
 - Pyreadstat
+- PyArrow
+- Matplotlib
+- Seaborn
+- SciPy
 - Scikit-learn
 - XGBoost
 - SHAP
-- Matplotlib
-- Seaborn
 - Jupyter Notebook
 
 ---
@@ -98,7 +129,7 @@ The project is being developed using:
 
 The NFHS-5 microdata is **not included** in this repository.
 
-To reproduce this project, users must independently obtain access to the NFHS-5 Birth Recode dataset through the DHS Program and comply with all applicable data usage policies and terms of use.
+Users wishing to reproduce this project must independently obtain access to the NFHS-5 Birth Recode dataset through the DHS Program and comply with all applicable data usage policies.
 
 ---
 
@@ -106,9 +137,13 @@ To reproduce this project, users must independently obtain access to the NFHS-5 
 
 The remaining work includes:
 
-- Training multiple machine learning models
-- Comparing model performance
-- Performing hyperparameter tuning
-- Generating SHAP explanations
-- Interpreting the most important predictors of Cesarean section delivery
-- Preparing the project for publication and reproducibility
+- Machine learning preprocessing
+- Logistic Regression baseline model
+- Decision Tree model
+- Random Forest model
+- XGBoost model
+- Hyperparameter tuning
+- Model evaluation and comparison
+- SHAP explainability
+- Final model interpretation
+- Research paper preparation
