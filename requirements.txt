@@ -2,13 +2,13 @@ pandas
 numpy
 pyreadstat
 pyarrow
-matplotlib
-seaborn
 scipy
 scikit-learn
 xgboost
 shap
+joblib
+matplotlib
+seaborn
 jupyter
 notebook
 ipykernel
-joblib

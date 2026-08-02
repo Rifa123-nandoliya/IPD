@@ -1,37 +1,62 @@
+# Raw and processed data
 data/
 
 *.dta
 *.sav
 *.csv
 *.parquet
+*.feather
 
+# Serialized preprocessing and model artifacts
+artifacts/
+
+*.joblib
+*.pkl
+*.pickle
+
+# NumPy arrays and large generated objects
+*.npy
+*.npz
+
+# Python cache files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
+# Virtual environments
 .venv/
 venv/
 env/
 
+# Jupyter temporary files
 .ipynb_checkpoints/
 
+# Operating system files
 .DS_Store
 Thumbs.db
 
+# VS Code
 .vscode/
 
+# Logs
 *.log
 
+# Environment variables and secrets
 .env
+.env.*
 
+# Build artifacts
 build/
 dist/
 *.egg-info/
 
-*.pkl
-*.joblib
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
 
-artifacts/
-
-*.joblib
+# Temporary files
+*.tmp
+*.temp
+~$*
