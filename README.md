@@ -4,7 +4,7 @@
 
 This project develops an explainable machine learning model to predict whether an institutional delivery in India will result in a Cesarean section using data from the National Family Health Survey-5 (NFHS-5).
 
-The project emphasizes careful feature selection, prevention of target leakage, respondent-level data splitting, exploratory data analysis, model comparison, hyperparameter tuning, and SHAP-based explainability.
+The project emphasizes careful feature selection, prevention of target leakage, respondent-level data splitting, exploratory data analysis, machine learning model comparison, hyperparameter tuning, SHAP-based explainability, probability calibration, and classification-threshold optimization.
 
 The final selected model was a tuned XGBoost classifier.
 
@@ -12,12 +12,14 @@ The final selected model was a tuned XGBoost classifier.
 
 The main objectives of this project are:
 
-- Predict the likelihood of Cesarean section delivery using maternal, socioeconomic, obstetric, antenatal care, and pregnancy-related factors.
+- Predict the likelihood of Cesarean section delivery using maternal, socioeconomic, obstetric, antenatal-care, and pregnancy-related factors.
 - Identify the most important predictors associated with Cesarean section delivery.
 - Compare linear and tree-based machine learning models.
 - Prevent respondent-level data leakage during model development.
 - Optimize the strongest candidate models using grouped cross-validation.
 - Explain global and individual model predictions using SHAP.
+- Evaluate the reliability of predicted probabilities.
+- Determine an appropriate classification threshold.
 - Examine how healthcare, maternal, socioeconomic, and reproductive factors influence model predictions.
 
 ## Dataset
@@ -44,14 +46,16 @@ After restricting the analysis to institutional deliveries, the final modeling d
 │   ├── raw/                              # Original NFHS-5 data (ignored)
 │   └── processed/                        # Processed datasets (ignored)
 ├── notebooks/
-│   ├── 01_data_preparation.ipynb
+│   ├── 01_data_exploration.ipynb
 │   ├── 02_exploratory_data_analysis.ipynb
 │   ├── 03_machine_learning_preprocessing.ipynb
 │   ├── 04_baseline_machine_learning_models.ipynb
 │   ├── 05_hyperparameter_tuning.ipynb
-│   └── 06_shap_explainability.ipynb
+│   ├── 06_shap_explainability.ipynb
+│   ├── 07_calibration_threshold_optimization.ipynb
+│   └── 08_results_discussion_and_conclusion.ipynb
 ├── artifacts/                            # Saved models and analysis objects (ignored)
-├── outputs/                              # Figures and report-ready outputs
+├── outputs/                              # Safe figures and report-ready outputs
 ├── src/                                  # Reusable source code
 ├── docs/                                 # Project documentation and references
 ├── requirements.txt
@@ -79,8 +83,10 @@ The project follows the workflow below:
 14. Hyperparameter tuning with grouped cross-validation
 15. Final model comparison and selection
 16. SHAP-based global and local explainability
-17. Calibration and threshold analysis
-18. Final interpretation and reporting
+17. Probability calibration
+18. Classification-threshold optimization
+19. Final results interpretation
+20. Discussion, limitations, future work, and conclusion
 
 ## Data Preparation
 
@@ -121,7 +127,7 @@ The EDA phase included:
 - Pregnancy counselling analysis
 - Pregnancy-complication analysis
 - Facility-type analysis
-- Mann-Whitney U tests for numeric predictors
+- Mann–Whitney U tests for numeric predictors
 - Chi-square tests for categorical predictors
 - Effect-size analysis
 - Spearman correlation analysis
@@ -281,6 +287,86 @@ Facility type was the most influential predictor in the final XGBoost model.
 
 SHAP findings describe associations learned by the model and must not be interpreted as proof of causation.
 
+## Probability Calibration and Threshold Optimization
+
+The reliability of the final XGBoost probability estimates was evaluated using:
+
+- Calibration curves
+- Brier score
+- Sigmoid calibration
+- Isotonic calibration
+
+The original XGBoost model was compared with sigmoid-calibrated and isotonic-calibrated versions.
+
+Calibration produced only limited changes, indicating that the final XGBoost probabilities were already reasonably reliable.
+
+Classification thresholds ranging from 0.05 to 0.95 were then evaluated using:
+
+- Accuracy
+- Precision
+- Recall
+- Specificity
+- F1-score
+- Youden’s J statistic
+- False-positive count
+- False-negative count
+
+The following threshold strategies were compared:
+
+- Default threshold of 0.50
+- Threshold maximizing F1-score
+- Threshold maximizing Youden’s J
+- Recall-focused threshold
+
+The F1-optimal threshold was retained as the main recommended operating threshold because it provided a balanced trade-off between Precision and Recall.
+
+The chosen threshold remains a statistical operating point and should not be treated as a clinical decision threshold without external and prospective validation.
+
+## Interpretation and Discussion
+
+The final results showed that:
+
+- XGBoost provided the strongest overall balance of discrimination, recall, minority-class performance, and generalization.
+- Logistic Regression remained a stable and interpretable benchmark.
+- Random Forest benefited substantially from hyperparameter tuning.
+- Facility type was the strongest predictor in the final model.
+- Maternal BMI, reproductive history, wealth, education, and ANC utilization also contributed strongly to model predictions.
+- False-positive and false-negative cases likely reflect clinical and emergency factors not available in NFHS-5.
+- SHAP explanations describe learned associations and do not establish causality.
+
+## Study Limitations
+
+Important limitations include:
+
+- Retrospective survey-data design
+- Lack of detailed clinical and fetal variables
+- Lack of reliable previous Cesarean history
+- Possible recall and reporting bias
+- No external validation
+- No prospective clinical validation
+- Strong influence of facility type
+- Small size of the other-facility category
+- Statistical rather than clinically validated threshold selection
+- Inability to establish causal relationships
+
+## Future Work
+
+Future extensions could include:
+
+- External validation using another maternal-health dataset
+- Validation using another NFHS survey round
+- State-specific and district-level models
+- Models developed separately for public and private facilities
+- Inclusion of previous Cesarean history
+- Addition of richer clinical and fetal variables
+- Fairness analysis across demographic and socioeconomic groups
+- Survey-weight-aware model development
+- Prospective hospital-based validation
+- Development of an explainable research prototype
+- Comparison with alternative gradient-boosting algorithms
+- Sensitivity analysis without facility type
+- Sensitivity analysis excluding the other-facility category
+
 ## Technologies
 
 The project uses:
@@ -326,11 +412,15 @@ The following are excluded from version control:
 
 - Raw NFHS-5 data
 - Processed record-level datasets
-- Variable-mapping CSV files generated locally
+- Variable-mapping files generated locally
 - Serialized preprocessing objects
 - Trained model files
 - SHAP value arrays
-- Other potentially large derived artifacts
+- Calibration objects
+- Threshold artifacts
+- Other potentially large or record-level derived artifacts
+
+Only safe, aggregated figures and result summaries may be included under `outputs/`.
 
 ## Project Progress
 
@@ -359,12 +449,19 @@ The following are excluded from version control:
 - SHAP local explainability
 - High-risk and low-risk case analysis
 - False-positive and false-negative analysis
+- Probability calibration
+- Classification-threshold optimization
+- Results interpretation
+- Discussion
+- Study-strength analysis
+- Limitation analysis
+- Future-work planning
+- Final project conclusion
 
 ### Remaining Work
 
-- Probability calibration
-- Classification-threshold optimization
-- Final results discussion
-- Limitations and future-work analysis
-- Research paper preparation
-- Final presentation and project documentation
+- Literature review
+- Research-paper formatting
+- Reference management
+- Final presentation or poster
+- Final repository cleanup

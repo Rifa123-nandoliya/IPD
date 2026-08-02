@@ -3,9 +3,12 @@ data/
 
 *.dta
 *.sav
-*.csv
 *.parquet
 *.feather
+
+# Ignore CSV files containing data or saved artifacts
+data/**/*.csv
+artifacts/**/*.csv
 
 # Serialized preprocessing and model artifacts
 artifacts/
