@@ -1,0 +1,22 @@
+{
+  "random_state": 42,
+  "model_source": "refit in this notebook (no saved artifact found at MODEL_ARTIFACT_PATH)",
+  "shap_method": "shap.TreeExplainer on the fitted XGBClassifier step (positive class selected if 3D output)",
+  "sample": {
+    "requested_size": 5000,
+    "actual_size": 5000,
+    "sampling_method": "class-stratified random sample without replacement, drawn only from locked test indices",
+    "sample_class_balance": 0.2222,
+    "test_set_class_balance": 0.22226361672006556
+  },
+  "consistency_check_against_b2": {
+    "fresh_roc_auc": 0.803733891753796,
+    "fresh_pr_auc": 0.5333750639030855,
+    "fresh_brier": 0.1825374811887741,
+    "tolerance": 0.005
+  },
+  "domain_mapping_source": "..\\..\\data\\processed\\variable_dictionary_v2.csv",
+  "domain_override": "facility_type reassigned from its dictionary 'exposure' tag to the health_service_facility domain for this predictive-attribution analysis",
+  "n_predictors": 36,
+  "n_transformed_features": 99
+}

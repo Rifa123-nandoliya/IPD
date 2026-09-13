@@ -1,0 +1,42 @@
+{
+  "random_state": 42,
+  "primary_nuisance_source": "loaded from ..\\..\\outputs\\tables\\b4_aipw_row_level_nuisance.csv",
+  "confounder_set": {
+    "sensitivities_1_2_3_and_primary_fallback": [
+      "birth_order",
+      "wealth_index",
+      "education_years",
+      "residence",
+      "religion",
+      "social_group",
+      "twin_order",
+      "state"
+    ],
+    "sensitivity_4_refined_strata": [
+      "wealth_index",
+      "education_years",
+      "residence",
+      "religion",
+      "social_group",
+      "twin_order",
+      "state"
+    ],
+    "sensitivity_4_note": "birth_order removed relative to the notebook-07 set -- constant in a first-births-only population"
+  },
+  "sensitivities_run": [
+    "1_propensity_trimming (0.05-0.95, reuses primary nuisance predictions)",
+    "2a_ipw_only / 2b_outcome_regression_only (reuse primary nuisance predictions)",
+    "3_one_birth_per_woman (refit on most-recent-eligible-birth-per-respondent population)",
+    "4_refined_lower_risk / 4_refined_elevated_risk (refit on risk_stratum_refined_sensitivity population)",
+    "5_e_value_point_estimate / 5_e_value_ci_bound_closest_to_null (closed-form, no refitting)"
+  ],
+  "no_additional_analyses_added": true,
+  "bootstrap": {
+    "method": "PSU-cluster bootstrap, resampled with replacement within sample_stratum_v022 strata (within each sensitivity's own population)",
+    "n_replicates": 500,
+    "seed": 42,
+    "ci_method": "percentile (2.5 / 97.5)",
+    "caveat": "Nuisance predictions are fixed/plugged-in per replicate for sensitivities that reuse primary predictions (1, 2); sensitivities requiring refitting (3, 4) still treat their OWN nuisance predictions as fixed across bootstrap replicates -- no sensitivity refits nuisance models inside the bootstrap loop itself."
+  },
+  "interpretation_rule": "Every result in this notebook is a SENSITIVITY analysis, reported next to (never replacing) the primary AIPW estimate from notebook 07. Selection-on-observables causal-style estimates throughout, not randomized causality."
+}

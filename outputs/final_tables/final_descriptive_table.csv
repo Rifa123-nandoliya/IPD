@@ -1,0 +1,4 @@
+facility_sector,n_unweighted,weighted_prevalence_pct,ci95_low_pct,ci95_high_pct
+public,150299,14.31,14.01,14.62
+private,50495,47.37,46.67,48.06
+other,517,0.0,0.0,0.0

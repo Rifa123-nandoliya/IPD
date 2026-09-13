@@ -1,0 +1,48 @@
+{
+  "random_state": 42,
+  "population": {
+    "n_total_v2": 201311,
+    "n_excluded_other": 517,
+    "n_analytic_sample": 200794
+  },
+  "exposure": {
+    "private": 1,
+    "public": 0
+  },
+  "confounder_set": [
+    "birth_order",
+    "wealth_index",
+    "education_years",
+    "residence",
+    "religion",
+    "social_group",
+    "twin_order",
+    "state"
+  ],
+  "cross_fitting": {
+    "method": "StratifiedGroupKFold, stratified on exposure, grouped by respondent_id",
+    "n_folds": 5
+  },
+  "nuisance_models": {
+    "propensity": "LogisticRegression(max_iter=1000, random_state=42), survey-weighted via sample_weight_normalized",
+    "outcome": "xgboost S-learner (confounders + exposure as a feature), survey-weighted via sample_weight_normalized, fixed hyperparameters, no tuning on outcome"
+  },
+  "clipping": {
+    "method": "hard clip",
+    "epsilon": 1e-06
+  },
+  "extreme_propensity_thresholds": {
+    "lower": 0.05,
+    "upper": 0.95
+  },
+  "weighting_combination": "Survey weight (sample_weight_normalized) is applied as an OUTER multiplier when averaging AIPW pseudo-outcomes across the sample. It is NOT multiplied into the pseudo-outcome itself alongside the propensity terms (1/e_hat, 1/(1-e_hat)), which would double-count the confounding adjustment. This differs from notebook 06's diagnostic combined_weight.",
+  "bootstrap": {
+    "method": "PSU-cluster bootstrap, resampled with replacement within sample_stratum_v022 strata",
+    "n_replicates": 500,
+    "seed": 42,
+    "ci_method": "percentile (2.5 / 97.5)",
+    "caveat": "Nuisance predictions are treated as fixed/plugged-in for every replicate; nuisance models are not refit per replicate."
+  },
+  "trimmed_sensitivity_run": false,
+  "interpretation_rule": "Selection-on-observables causal-style estimate under consistency, positivity, and conditional exchangeability given the stated confounder set. NOT randomized causality. Credible only to the extent the confounder set is sufficient -- several plausible confounders (maternal_age, bmi, health_insurance, pregnancy complications) are excluded from this primary specification, documented in notebook 06."
+}

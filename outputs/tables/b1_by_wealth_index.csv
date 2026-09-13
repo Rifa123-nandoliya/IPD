@@ -1,0 +1,6 @@
+label,n_unweighted,weighted_prevalence_pct,se_pct,ci95_low_pct,ci95_high_pct,singleton_psu_strata,strata_used
+wealth_1,46189,9.61,0.225,9.17,10.05,16,2693
+wealth_2,46414,17.19,0.287,16.62,17.75,16,2693
+wealth_3,41341,25.89,0.353,25.19,26.58,16,2693
+wealth_4,37251,31.81,0.41,31.01,32.61,16,2693
+wealth_5,30116,40.07,0.476,39.14,41.0,16,2693

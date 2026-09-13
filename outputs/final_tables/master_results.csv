@@ -1,0 +1,11 @@
+metric,value,ci_low,ci_high,interpretation_layer,rd_difference_ci_includes_zero
+descriptive_weighted_gap_pct,33.05,32.3,33.8,descriptive,
+predictive_xgboost_pr_auc,0.5334,,,predictive,
+predictive_xgboost_roc_auc,0.8037,,,predictive,
+shap_top_domain_share_pct,45.553604,,,predictive,
+standardization_overall_mean_delta_pct,27.05365196535428,26.801082516417814,27.25403167723057,model_based_standardization,
+aipw_overall_risk_difference_pct,28.469798451314183,27.671957277298677,29.24425924304067,causal_style_aipw,
+aipw_overall_risk_ratio,2.7260070309880806,2.656603904179091,2.803452731943965,causal_style_aipw,
+aipw_lower_risk_rd_pct,29.92351550737756,28.85777667229062,30.963521781472856,causal_style_aipw,
+aipw_elevated_risk_rd_pct,28.232258022834444,22.017371708170185,35.792196092314526,causal_style_aipw,
+aipw_rd_difference_lower_minus_elevated_pct,1.6912574845431183,-5.96361759325467,7.739335087274855,causal_style_aipw,1.0

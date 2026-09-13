@@ -1,0 +1,60 @@
+{
+  "random_state": 42,
+  "population": {
+    "n_total_v2": 201311,
+    "n_excluded_other": 517,
+    "n_analytic_sample": 200794
+  },
+  "exposure": {
+    "private": 1,
+    "public": 0
+  },
+  "confounder_set": {
+    "included": [
+      "birth_order",
+      "wealth_index",
+      "education_years",
+      "residence",
+      "religion",
+      "social_group",
+      "twin_order",
+      "state"
+    ],
+    "excluded_with_reasons": {
+      "ANC/service mediators (all)": "post-exposure health-service mediators, per Step 2 domain reclassification",
+      "facility_type / delivery_place_code": "the exposure itself, not a confounder",
+      "maternal_age": "sensitivity-only -- v012 is age at interview, not verified as age at the analyzed birth; not safely derivable as age-at-index-birth from current v2 fields (would need DHS b3/v011 CMC dates, not in v2). age_at_first_birth is exact for birth_order==1 records only.",
+      "bmi": "sensitivity-only -- pre-exposure timing relative to the analyzed birth not verified",
+      "health_insurance": "sensitivity-only -- pre-exposure timing/uptake relative to facility choice not verified",
+      "convulsions_during_pregnancy / swelling_during_pregnancy": "sensitivity-only -- systematic/non-random missingness (Step 2 audit)",
+      "total_children_ever_born": "excluded -- unresolved timing TODO (survey-date snapshot) from Step 2",
+      "preceding_birth_interval / age_at_first_birth": "optional sensitivity variables -- unresolved DHS special-code TODO from Step 2",
+      "district": "optional sensitivity variable -- finer-grained geographic control than the primary state adjustment",
+      "risk_stratum_primary / risk_stratum_refined_sensitivity / first_birth": "v2-derived stratifiers, not baseline confounders"
+    }
+  },
+  "propensity_model": {
+    "primary": "LogisticRegression(max_iter=1000, random_state=42), fit survey-weighted via sample_weight=sample_weight_normalized, no class rebalancing, no outcome-based tuning",
+    "ml_sensitivity_model_run": false,
+    "ml_sensitivity_model_survey_weighted": false
+  },
+  "clipping": {
+    "method": "hard clip",
+    "epsilon": 1e-06
+  },
+  "trimming_sensitivity_thresholds": {
+    "lower": 0.05,
+    "upper": 0.95
+  },
+  "weighting": {
+    "stabilized_ipw_formula": "private: P(private)/e ; public: (1-P(private))/(1-e); P(private) is the survey-weighted marginal prevalence; e itself now comes from a survey-weighted propensity model (Section 4)",
+    "combined_weight_formula": "sample_weight_normalized * stabilized_ipw",
+    "combined_weight_used_for": "post-weighting SMD and ESS diagnostics ONLY -- not used to estimate any effect in this notebook"
+  },
+  "smd_flag_threshold": 0.1,
+  "common_support_range": [
+    0.005682524164921996,
+    0.9158979309046248
+  ],
+  "interpretation_rule": "Diagnostic only. No causal effect is estimated or implied by this notebook."
+}

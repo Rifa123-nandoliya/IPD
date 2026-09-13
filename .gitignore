@@ -59,6 +59,10 @@ dist/
 .coverage
 htmlcov/
 
+outputs/tables/b4_aipw_row_level_nuisance.csv
+outputs/tables/b4_row_level_propensity_diagnostics.csv
+outputs/tables/b4_risk_stratified_row_level_nuisance.csv
+
 # Temporary files
 *.tmp
 *.temp

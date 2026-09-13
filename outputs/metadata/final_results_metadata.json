@@ -1,0 +1,40 @@
+{
+  "source_files": {
+    "b1_facility_sector_prevalence": "..\\..\\outputs\\tables\\b1_facility_sector_prevalence.csv",
+    "b1_public_private_gap_overall": "..\\..\\outputs\\tables\\b1_public_private_gap_overall.csv",
+    "b1_risk_stratum_prevalence": "..\\..\\outputs\\tables\\b1_risk_stratum_prevalence.csv",
+    "b1_public_private_gap_by_risk_stratum": "..\\..\\outputs\\tables\\b1_public_private_gap_by_risk_stratum.csv",
+    "b1_facility_by_risk_stratum": "..\\..\\outputs\\tables\\b1_facility_by_risk_stratum.csv",
+    "b2_model_performance": "..\\..\\outputs\\tables\\b2_model_performance.csv",
+    "b2_calibration_metrics": "..\\..\\outputs\\tables\\b2_calibration_metrics.csv",
+    "b2_shap_original_feature_importance": "..\\..\\outputs\\tables\\b2_shap_original_feature_importance.csv",
+    "b2_shap_domain_importance": "..\\..\\outputs\\tables\\b2_shap_domain_importance.csv",
+    "b3_overall_summary": "..\\..\\outputs\\tables\\b3_overall_summary.csv",
+    "b3_risk_stratified_summary": "..\\..\\outputs\\tables\\b3_risk_stratified_summary.csv",
+    "b4_aipw_overall_summary": "..\\..\\outputs\\tables\\b4_aipw_overall_summary.csv",
+    "b4_risk_stratified_aipw_summary": "..\\..\\outputs\\tables\\b4_risk_stratified_aipw_summary.csv",
+    "b4_sensitivity_results_consolidated": "..\\..\\outputs\\tables\\b4_sensitivity_results_consolidated.csv"
+  },
+  "missing_source_files": [],
+  "consistency_checks": "All passed -- see Section 3 output for exact values and tolerances.",
+  "headline_estimates": {
+    "descriptive_weighted_gap_pct": 33.05,
+    "predictive_xgboost_pr_auc": 0.5334,
+    "predictive_xgboost_roc_auc": 0.8037,
+    "shap_top_domain_share_pct": 45.553604,
+    "standardization_overall_mean_delta_pct": 27.05365196535428,
+    "aipw_overall_risk_difference_pct": 28.469798451314183,
+    "aipw_overall_risk_ratio": 2.7260070309880806,
+    "aipw_lower_risk_rd_pct": 29.92351550737756,
+    "aipw_elevated_risk_rd_pct": 28.232258022834444,
+    "aipw_rd_difference_lower_minus_elevated_pct": 1.6912574845431183
+  },
+  "rd_difference_lower_vs_elevated_ci_includes_zero": true,
+  "interpretation_layers": {
+    "descriptive": "B1 survey-weighted prevalence -- association only",
+    "predictive": "B2 + SHAP -- what the model learned; not causal",
+    "model_based_standardization": "B3 -- standardized prediction scenario; not a causal or counterfactual effect",
+    "causal_style_aipw": "B4 -- selection-on-observables estimate under the stated confounder set; NOT randomized causality"
+  },
+  "randomized_causality_claimed": false
+}

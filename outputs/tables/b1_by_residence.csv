@@ -1,0 +1,3 @@
+label,n_unweighted,weighted_prevalence_pct,se_pct,ci95_low_pct,ci95_high_pct,singleton_psu_strata,strata_used
+residence_1,44195,34.32,0.417,33.5,35.13,16,2693
+residence_2,157116,20.24,0.168,19.91,20.57,16,2693

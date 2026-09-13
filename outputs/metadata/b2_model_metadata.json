@@ -1,0 +1,94 @@
+{
+  "random_state": 42,
+  "split": {
+    "method": "StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=42), first split taken",
+    "group_column": "respondent_id",
+    "n_train": 161048,
+    "n_test": 40263,
+    "n_train_respondents": 126756,
+    "n_test_respondents": 31673,
+    "respondent_overlap": 0
+  },
+  "predictor_set": {
+    "n_features": 36,
+    "numeric_features": [
+      "maternal_age",
+      "education_years",
+      "wealth_index",
+      "birth_order",
+      "total_children_ever_born",
+      "preceding_birth_interval",
+      "age_at_first_birth",
+      "bmi",
+      "first_anc_timing",
+      "anc_visits"
+    ],
+    "categorical_features": [
+      "facility_type",
+      "residence",
+      "religion",
+      "social_group",
+      "twin_order"
+    ],
+    "binary_features": [
+      "health_insurance",
+      "anc_doctor",
+      "anc_nurse_midwife",
+      "anc_traditional_attendant",
+      "anc_community_worker",
+      "anc_anganwadi_worker",
+      "anc_asha_worker",
+      "anc_other_provider",
+      "no_anc_provider",
+      "weight_measured_during_pregnancy",
+      "bp_measured_during_pregnancy",
+      "urine_sample_during_pregnancy",
+      "blood_sample_during_pregnancy",
+      "told_about_pregnancy_complications",
+      "counselled_vaginal_bleeding",
+      "counselled_convulsions",
+      "counselled_prolonged_labour",
+      "counselled_severe_abdominal_pain",
+      "counselled_high_blood_pressure",
+      "convulsions_during_pregnancy",
+      "swelling_during_pregnancy"
+    ]
+  },
+  "xgboost": {
+    "hyperparameter_source": "Reused from v1 05_hyperparameter_tuning.ipynb (RandomizedSearchCV, grouped CV, average_precision scoring, 12 iterations). Justified by unchanged predictor set/cohort between v1 and v2.",
+    "params": {
+      "objective": "binary:logistic",
+      "eval_metric": "logloss",
+      "scale_pos_weight": 3.4994272623138603,
+      "random_state": 42,
+      "n_jobs": -1,
+      "tree_method": "hist",
+      "colsample_bytree": 0.7141915784487018,
+      "gamma": 0.6084844859190754,
+      "learning_rate": 0.048164145309070844,
+      "max_depth": 6,
+      "min_child_weight": 9,
+      "n_estimators": 198,
+      "reg_alpha": 0.012563152773938664,
+      "reg_lambda": 0.6305535040199283,
+      "subsample": 0.6663329821247654
+    },
+    "v1_reported_cv_pr_auc": 0.5291,
+    "calibration_method_selected": "isotonic"
+  },
+  "logistic_regression": {
+    "hyperparameter_source": "Reused from v1 05_hyperparameter_tuning.ipynb (GridSearchCV, grouped CV, average_precision scoring). Justified by unchanged predictor set/cohort between v1 and v2.",
+    "params": {
+      "C": 1,
+      "penalty": "l1",
+      "solver": "saga",
+      "class_weight": "balanced",
+      "max_iter": 2000,
+      "random_state": 42
+    },
+    "v1_reported_cv_pr_auc": 0.5085,
+    "calibration_method_selected": "isotonic"
+  },
+  "classification_threshold": "0.5 (default) -- formal threshold optimization is deferred to a later step, not performed here",
+  "light_retuning_run": false
+}

@@ -1,0 +1,54 @@
+{
+  "random_state": 42,
+  "population": {
+    "n_total_v2": 201311,
+    "n_analytic_sample": 82426,
+    "strata": {
+      "lower_risk": {
+        "n": 79531,
+        "n_public": 56781,
+        "n_private": 22750
+      },
+      "elevated_risk": {
+        "n": 2895,
+        "n_public": 1658,
+        "n_private": 1237
+      }
+    }
+  },
+  "exposure": {
+    "private": 1,
+    "public": 0
+  },
+  "confounder_set": [
+    "wealth_index",
+    "education_years",
+    "residence",
+    "religion",
+    "social_group",
+    "twin_order",
+    "state"
+  ],
+  "note_on_birth_order": "Excluded from the confounder set in this notebook (unlike notebook 07's 8-variable set) because it is constant (==1) for every record in a first-births-only population and would be non-informative.",
+  "cross_fitting": {
+    "method": "StratifiedGroupKFold, stratified on exposure, grouped by respondent_id, run INDEPENDENTLY per stratum",
+    "n_folds": 5
+  },
+  "nuisance_models": {
+    "propensity": "LogisticRegression(max_iter=1000, random_state=42), survey-weighted via sample_weight_normalized",
+    "outcome": "xgboost S-learner (confounders + exposure as a feature), survey-weighted, fixed hyperparameters -- identical spec to notebook 07"
+  },
+  "clipping": {
+    "method": "hard clip",
+    "epsilon": 1e-06
+  },
+  "bootstrap": {
+    "method": "Joint PSU-cluster bootstrap over the COMBINED first-births sample, resampled with replacement within sample_stratum_v022 design strata; stratum-specific RD/RR and their difference computed from each replicate's resampled rows, split by risk_stratum_primary",
+    "n_replicates": 500,
+    "seed": 42,
+    "ci_method": "percentile (2.5 / 97.5)",
+    "caveat": "Nuisance predictions are fixed/plugged-in per replicate; nuisance models are not refit per replicate."
+  },
+  "sensitivity_analyses_run": false,
+  "interpretation_rule": "Selection-on-observables causal-style estimates under consistency, positivity, and conditional exchangeability given the stated confounder set, estimated separately within each first-birth risk stratum. NOT randomized causality. Same excluded-confounder caveats as notebook 07 apply here."
+}

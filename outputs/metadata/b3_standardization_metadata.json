@@ -1,0 +1,23 @@
+{
+  "random_state": 42,
+  "model_source": "refit in this notebook (no saved artifact found)",
+  "common_support_rule": {
+    "method": "descriptive cell-count check (NOT the formal B4 propensity/overlap analysis)",
+    "cells_defined_by": [
+      "risk_stratum_primary",
+      "wealth_index",
+      "residence"
+    ],
+    "min_public_comparators_per_cell": 30,
+    "n_private_total": 10202,
+    "n_private_common_support": 10122,
+    "pct_private_common_support": 99.22
+  },
+  "bootstrap": {
+    "method": "PSU-cluster bootstrap, resampled with replacement within sample_stratum_v022 strata",
+    "n_replicates": 500,
+    "seed": 42,
+    "ci_method": "percentile (2.5 / 97.5)"
+  },
+  "interpretation_rule": "All results are a model-based standardized prediction scenario. Never described as a causal effect or counterfactual treatment effect."
+}

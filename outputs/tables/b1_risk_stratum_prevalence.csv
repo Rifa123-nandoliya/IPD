@@ -1,0 +1,4 @@
+label,n_unweighted,weighted_prevalence_pct,se_pct,ci95_low_pct,ci95_high_pct,singleton_psu_strata,strata_used
+lower_risk,79701,28.6,0.236,28.14,29.07,16,2693
+elevated_risk,2906,57.11,1.506,54.16,60.07,16,2693
+not_applicable_multiparous,118704,20.42,0.188,20.05,20.79,16,2693

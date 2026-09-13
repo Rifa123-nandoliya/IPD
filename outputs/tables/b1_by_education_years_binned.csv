@@ -1,0 +1,6 @@
+label,n_unweighted,weighted_prevalence_pct,se_pct,ci95_low_pct,ci95_high_pct,singleton_psu_strata,strata_used
+education_0 (none),38010,10.37,0.246,9.89,10.85,16,2693
+education_1-5,23847,14.92,0.386,14.16,15.68,16,2693
+education_6-8,36297,19.75,0.351,19.06,20.43,16,2693
+education_9-12,72206,28.14,0.282,27.58,28.69,16,2693
+education_13+,30951,41.49,0.452,40.6,42.37,16,2693

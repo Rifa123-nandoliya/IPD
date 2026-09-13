@@ -1,0 +1,2 @@
+label,n_a,n_b,prevalence_a_pct,prevalence_b_pct,gap_pct,se_pct,ci95_low_pct,ci95_high_pct,singleton_psu_strata
+private_minus_public_overall,50495,150299,47.37,14.31,33.05,0.383,32.3,33.8,16

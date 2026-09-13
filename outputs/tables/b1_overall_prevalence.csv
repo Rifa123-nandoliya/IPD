@@ -1,0 +1,2 @@
+label,n_unweighted,weighted_prevalence_pct,se_pct,ci95_low_pct,ci95_high_pct,singleton_psu_strata,strata_used
+Overall,201311,24.21,0.166,23.88,24.54,16,2693

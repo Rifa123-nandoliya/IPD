@@ -1,0 +1,3 @@
+model,calibration_method,oof_brier_sigmoid,oof_brier_isotonic,test_brier_raw,test_brier_calibrated,test_brier_raw_public,test_brier_calibrated_public,test_brier_raw_private,test_brier_calibrated_private
+XGBoost,isotonic,0.1366,0.1361,0.1825,0.1358,0.1441,0.1046,0.297,0.2285
+Logistic Regression,isotonic,0.1391,0.1385,0.1861,0.1384,0.1466,0.1062,0.3038,0.2342

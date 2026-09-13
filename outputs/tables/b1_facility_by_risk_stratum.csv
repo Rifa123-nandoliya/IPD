@@ -1,0 +1,7 @@
+label,n_unweighted,weighted_prevalence_pct,se_pct,ci95_low_pct,ci95_high_pct,singleton_psu_strata,strata_used,risk_stratum,facility_type
+lower_risk__public,56781,17.57,0.242,17.09,18.04,16,2693,lower_risk,public
+lower_risk__private,22750,50.16,0.462,49.26,51.06,16,2693,lower_risk,private
+lower_risk__other,170,0.0,0.0,0.0,0.0,16,2693,lower_risk,other
+elevated_risk__public,1658,41.01,1.908,37.27,44.75,16,2693,elevated_risk,public
+elevated_risk__private,1237,70.32,2.252,65.91,74.73,16,2693,elevated_risk,private
+elevated_risk__other,11,0.0,0.0,0.0,0.0,16,2693,elevated_risk,other

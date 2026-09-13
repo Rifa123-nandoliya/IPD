@@ -1,0 +1,3 @@
+label,n_a,n_b,prevalence_a_pct,prevalence_b_pct,gap_pct,se_pct,ci95_low_pct,ci95_high_pct,singleton_psu_strata,risk_stratum
+lower_risk__private_minus_public,22750,56781,50.16,17.57,32.59,0.527,31.56,33.62,16,lower_risk
+elevated_risk__private_minus_public,1237,1658,70.32,41.01,29.31,2.926,23.58,35.05,16,elevated_risk

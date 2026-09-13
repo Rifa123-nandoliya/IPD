@@ -1,0 +1,11 @@
+original_feature,mean_abs_shap,share_pct,is_facility_type,domain
+facility_type,0.6812597,25.049007,True,health_service_facility
+total_children_ever_born,0.26066166,9.584181,False,maternal_reproductive_clinical_proxy
+bmi,0.246951,9.080058,False,maternal_reproductive_clinical_proxy
+wealth_index,0.16789627,6.1733217,False,socioeconomic_geographic
+anc_doctor,0.14334174,5.270484,False,health_service_facility
+age_at_first_birth,0.14140497,5.1992717,False,maternal_reproductive_clinical_proxy
+education_years,0.13307688,4.893059,False,socioeconomic_geographic
+anc_visits,0.127433,4.685541,False,health_service_facility
+social_group,0.09813557,3.6083136,False,socioeconomic_geographic
+preceding_birth_interval,0.07748386,2.848978,False,maternal_reproductive_clinical_proxy

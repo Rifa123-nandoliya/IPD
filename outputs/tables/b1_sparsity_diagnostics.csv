@@ -1,0 +1,14 @@
+label,n_unweighted,singleton_psu_strata,strata_used
+Overall,201311,16,2693
+public,150299,16,2693
+private,50495,16,2693
+other,517,16,2693
+lower_risk,79701,16,2693
+elevated_risk,2906,16,2693
+not_applicable_multiparous,118704,16,2693
+lower_risk__public,56781,16,2693
+lower_risk__private,22750,16,2693
+lower_risk__other,170,16,2693
+elevated_risk__public,1658,16,2693
+elevated_risk__private,1237,16,2693
+elevated_risk__other,11,16,2693

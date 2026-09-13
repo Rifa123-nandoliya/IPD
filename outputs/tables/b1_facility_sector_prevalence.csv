@@ -1,0 +1,4 @@
+label,n_unweighted,weighted_prevalence_pct,se_pct,ci95_low_pct,ci95_high_pct,singleton_psu_strata,strata_used
+public,150299,14.31,0.155,14.01,14.62,16,2693
+private,50495,47.37,0.355,46.67,48.06,16,2693
+other,517,0.0,0.0,0.0,0.0,16,2693
