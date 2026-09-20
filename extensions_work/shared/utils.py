@@ -202,6 +202,65 @@ def aipw_point_estimate(y, a, e, mu1, mu0, weights):
 
 
 # ---------------------------------------------------------------------------
+# Full cross-fitted AIPW + PSU-bootstrap pipeline (round-agnostic convenience
+# wrapper -- used by Extension 3 to run the identical Notebook-07 pipeline
+# independently within each NFHS round)
+# ---------------------------------------------------------------------------
+
+def run_cross_fitted_aipw(
+    df, confounder_cols, numeric_confounders, categorical_confounders,
+    outcome_col="csection", exposure_col="exposure", weight_col="sample_weight_normalized",
+    group_col="respondent_id", psu_col="cluster_number", stratum_col="sample_stratum_v022",
+    n_folds=5, random_state=42, n_bootstrap=500, bootstrap_seed=42, outcome_model_type="xgboost",
+):
+    """End-to-end cross-fitted AIPW pipeline, mirroring notebooks/v2/07 exactly:
+    respondent-grouped cross-fitting, survey-weighted nuisance models, the AIPW
+    point estimate, and a PSU-cluster bootstrap within strata.
+
+    Returns a dict of point estimates, bootstrap replicate arrays, and the
+    row-level nuisance predictions.
+    """
+    W = df[confounder_cols].copy()
+    for col in categorical_confounders:
+        W[col] = W[col].astype("string").fillna("Missing").astype(str)
+
+    exposure = df[exposure_col].to_numpy()
+    outcome = df[outcome_col].astype(int).to_numpy()
+    weight = df[weight_col].to_numpy()
+    groups = df[group_col].to_numpy()
+    psu = df[psu_col].to_numpy()
+    stratum = df[stratum_col].to_numpy()
+
+    e_hat_raw, mu1_hat, mu0_hat, fold_assignments = cross_fit_nuisances(
+        W, exposure, outcome, groups, weight, numeric_confounders, categorical_confounders,
+        n_folds=n_folds, random_state=random_state, outcome_model_type=outcome_model_type,
+    )
+    e_hat_clipped = np.clip(e_hat_raw, 1e-6, 1 - 1e-6)
+
+    r1, r0, rd, rr = aipw_point_estimate(outcome, exposure, e_hat_clipped, mu1_hat, mu0_hat, weight)
+
+    rng = np.random.RandomState(bootstrap_seed)
+    rd_reps = np.empty(n_bootstrap)
+    rr_reps = np.empty(n_bootstrap)
+    for b in range(n_bootstrap):
+        idx = resample_indices_within_strata(psu, stratum, rng)
+        _, _, rd_b, rr_b = aipw_point_estimate(
+            outcome[idx], exposure[idx], e_hat_clipped[idx], mu1_hat[idx], mu0_hat[idx], weight[idx]
+        )
+        rd_reps[b] = rd_b
+        rr_reps[b] = rr_b
+
+    return {
+        "r1": r1, "r0": r0, "risk_difference": rd, "risk_ratio": rr,
+        "rd_reps": rd_reps, "rr_reps": rr_reps,
+        "rd_ci": (float(np.percentile(rd_reps, 2.5)), float(np.percentile(rd_reps, 97.5))),
+        "rr_ci": (float(np.percentile(rr_reps, 2.5)), float(np.percentile(rr_reps, 97.5))),
+        "e_hat_clipped": e_hat_clipped, "mu1_hat": mu1_hat, "mu0_hat": mu0_hat,
+        "fold_assignments": fold_assignments, "n": len(df),
+    }
+
+
+# ---------------------------------------------------------------------------
 # PSU-cluster bootstrap (identical to notebook 07 section 10)
 # ---------------------------------------------------------------------------
 
