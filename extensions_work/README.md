@@ -16,8 +16,8 @@ contributed separately.
 
 | Extension | Folder | Status | Notes |
 |---|---|---|---|
-| 2 — Causal heterogeneity / DR-learner | `02_causal_heterogeneity/` | In progress | See folder README for current state. |
-| 3 — NFHS-4 → NFHS-5 temporal AIPW | `03_nfhs4_nfhs5_temporal/` | In progress | See folder README for current state. |
+| 2 — Causal heterogeneity / DR-learner | `02_causal_heterogeneity/` | Partial | Notebook complete and logic-verified against synthetic data (no NFHS access in this environment). Not yet run on the real cohort — do that locally, then fill in the folder README's final estimates. |
+| 3 — NFHS-4 → NFHS-5 temporal AIPW | `03_nfhs4_nfhs5_temporal/` | Partial | Notebook complete and logic-verified against synthetic data. Additionally blocked on: (a) an authorized local NFHS-4 Birth Recode to run the harmonization helper against, and (b) verifying `state`/`social_group` harmonization against the NFHS-4 recode manual (see `BLOCKED.md`). |
 
 ## Shared infrastructure
 
@@ -55,5 +55,6 @@ jupyter notebook extensions_work/03_nfhs4_nfhs5_temporal/notebook.ipynb
 ```
 
 See `CHANGELOG.md` for methodological decisions and known unresolved issues,
-and each extension's own `README.md` for its question, method, final
+`BLOCKED.md` for exactly what data/access is still needed and what to do
+next, and each extension's own `README.md` for its question, method, final
 estimates, QA checks, limitations, and files produced.
