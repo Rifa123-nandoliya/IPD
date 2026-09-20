@@ -1,0 +1,12 @@
+# Additional Python packages required by Extensions 2 and 3, beyond what is
+# already listed in the repository's top-level requirements.txt.
+#
+# Neither extension needed a new dependency: Extension 2's DR-learner uses
+# scikit-learn's RandomForestRegressor (see notebook.ipynb Section 15 for why
+# a dedicated causal-forest package such as econml/grf was deliberately not
+# added), and Extension 3 reuses the same pandas/numpy/scikit-learn/xgboost
+# stack notebooks/v2/06-07 already depend on.
+#
+# This file is intentionally empty of new entries. If a future revision of
+# either extension adds a new package, list it here (not in requirements.txt,
+# so the base V2 pipeline's dependency set stays untouched).
