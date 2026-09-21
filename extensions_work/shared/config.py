@@ -54,7 +54,11 @@ for _d in (EXT02_OUTPUTS_DIR, EXT03_OUTPUTS_DIR):
 RANDOM_STATE = 42
 N_FOLDS = 5
 CLIP_EPS = 1e-6
-N_BOOTSTRAP = 500
+# TEMPORARY: lowered from 500 for a faster test run on slower hardware.
+# Set this back to 500 before treating any results as final -- it only
+# affects how precise/stable the bootstrap confidence intervals are, not
+# the underlying point estimates (risk differences/ratios, top modifiers).
+N_BOOTSTRAP = 100
 BOOTSTRAP_SEED = 42
 
 # Primary NFHS-5 confounder set -- identical to notebooks/v2/06_propensity_
