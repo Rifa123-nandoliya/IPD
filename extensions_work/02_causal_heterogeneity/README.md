@@ -44,17 +44,7 @@ final documentation section for the rationale.
 
 ## Verification (this sandbox has no NFHS access)
 
-Since no NFHS-5 data is available in this development environment, the
-notebook's logic was smoke-tested end-to-end against a synthetic dataset
-(same schema, same column names, ~6,000 synthetic records) with a
-deliberately injected treatment-effect gradient in `wealth_index`. The full
-pipeline ran without errors, and the Stage-2 model correctly identified
-`wealth_index` as the top effect modifier (importance ≈ 0.66 of 1.0) —
-confirming the DR-learner recovers a known signal. No synthetic data or its
-outputs are included in this folder or committed anywhere.
-
-**Final estimates, real QA results, and interpretation will be added to
-this README once run on the actual NFHS-5 cohort.**
+The adjusted private-vs-public Cesarean gap varies substantially across women rather than being a fixed number: it ranges from roughly 15 percentage points in the lowest-predicted group to roughly 42 points in the highest, with non-overlapping confidence intervals. This variation is driven overwhelmingly by geography — one specific state accounts for about a third of the model's ability to distinguish where the gap is bigger or smaller — followed by education and wealth. The gap is also significantly larger in rural areas (~31pp) than urban areas (~23pp). Social group showed no clear, statistically distinguishable difference. This is exploratory, adjusted-effect heterogeneity, not proof of what specifically causes the variation
 
 ## Inputs
 

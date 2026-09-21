@@ -1,0 +1,44 @@
+{
+  "random_state": 42,
+  "reused_notebook07_nuisances": false,
+  "n_analytic_sample": 200794,
+  "confounder_set_stage1": [
+    "birth_order",
+    "wealth_index",
+    "education_years",
+    "residence",
+    "religion",
+    "social_group",
+    "twin_order",
+    "state"
+  ],
+  "moderator_set_primary": [
+    "wealth_index",
+    "education_years",
+    "residence",
+    "social_group",
+    "state",
+    "twin_order"
+  ],
+  "maternal_age_sensitivity_enabled": false,
+  "stage1_nuisance_models": "identical to notebooks/v2/07 (LogisticRegression propensity, XGBoost S-learner outcome, survey-weighted, respondent-grouped 5-fold cross-fitting)",
+  "stage2_cate_model": {
+    "learner": "RandomForestRegressor(n_estimators=500, max_depth=6, min_samples_leaf=200)",
+    "target": "AIPW pseudo-outcome tau_hat = psi1 - psi0 (Kennedy 2020 DR-learner)",
+    "cross_fitting": "GroupKFold(n_splits=5), grouped by respondent_id, independent of Stage-1 folds",
+    "sample_weight": "sample_weight_normalized"
+  },
+  "validation": {
+    "method": "sorted-quantile-bin (quintile) realized AIPW effect vs. predicted CATE, PSU-cluster bootstrap CI per bin",
+    "n_bootstrap_per_bin": 500
+  },
+  "overall_aipw_estimate": {
+    "risk_difference_pct": 28.469798451314183,
+    "risk_ratio": 2.7260070309880806
+  },
+  "limitations": [
+    "PSU-cluster bootstrap uncertainty is computed per pre-specified subgroup/quantile bin, not by re-running the full Stage-1 + Stage-2 pipeline inside each bootstrap replicate (computationally infeasible at this scope) -- so bin-level CIs do not propagate Stage-1/Stage-2 model-selection uncertainty, only sampling uncertainty given the already-fitted nuisance and CATE models.",
+    "The second-stage RandomForestRegressor's own hyperparameters were fixed a priori and not tuned against tau_hat, to avoid outcome-driven model selection; this trades some predictive power for honesty."
+  ],
+  "interpretation_rule": "Exploratory adjusted-effect heterogeneity only. Not personalized causal truth. Only as credible as the primary AIPW analysis's selection-on-observables assumption."
+}
