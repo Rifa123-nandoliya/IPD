@@ -46,9 +46,17 @@ present in, or produced by, this environment.
 
 ## Known unresolved issues
 
-- Neither notebook has been run against real NFHS-5/NFHS-4 data — both are
-  logic-verified against synthetic data only (see each extension's README,
-  "Verification" section, and `BLOCKED.md`).
+- Extension 2 has now been run on the real NFHS-5 cohort (n=200,794); see
+  its README for final results. Running it uncovered a real bug: a
+  `TypeError` in the subgroup-bootstrap loop, caused by how a nullable-dtype
+  column (`social_group`/`residence`) represents missing values on the real
+  parquet file — not reproduced by the synthetic test data originally used
+  to verify the notebook's logic. Fixed with `.fillna(False)` before
+  converting to a plain boolean array; reproduced the exact failure on
+  synthetic data with a matching dtype to confirm the fix.
+- Extension 3 has not been run against real NFHS-5/NFHS-4 data — still
+  logic-verified against synthetic data only (see its README's
+  "Verification" section and `BLOCKED.md`).
 - Extension 3: `state` (v024) is not crosswalked across the 2015-16 → 2019-21
   state/UT boundary changes; excluded from the reduced/sensitivity
   confounder set until that crosswalk is built and verified.
