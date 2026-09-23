@@ -40,12 +40,16 @@ NFHS4_PROCESSED_DATA_PATH = Path(
 )
 
 # --- extensions_work output locations (auto-created; safe aggregate outputs only) ---
+EXT01_DIR = EXTENSIONS_ROOT / "01_quantitative_bias"
+EXT01_OUTPUTS_DIR = EXT01_DIR / "outputs"
 EXT02_DIR = EXTENSIONS_ROOT / "02_causal_heterogeneity"
 EXT02_OUTPUTS_DIR = EXT02_DIR / "outputs"
 EXT03_DIR = EXTENSIONS_ROOT / "03_nfhs4_nfhs5_temporal"
 EXT03_OUTPUTS_DIR = EXT03_DIR / "outputs"
+EXT05_DIR = EXTENSIONS_ROOT / "05_first_birth"
+EXT05_OUTPUTS_DIR = EXT05_DIR / "outputs"
 
-for _d in (EXT02_OUTPUTS_DIR, EXT03_OUTPUTS_DIR):
+for _d in (EXT01_OUTPUTS_DIR, EXT02_OUTPUTS_DIR, EXT03_OUTPUTS_DIR, EXT05_OUTPUTS_DIR):
     _d.mkdir(parents=True, exist_ok=True)
 
 # --- Constants inherited from the frozen V2 protocol (notebooks/v2/06, 07) ---

@@ -1,0 +1,11 @@
+confounder,scenario,p0_baseline,delta_p,rr_ud,rd_adjusted_pp,rr_adjusted,rd_attenuation_pp,n_draws,rd_adjusted_median_pp,rd_adjusted_p2_5_pp,rd_adjusted_p97_5_pp,pct_draws_rd_still_positive,pct_draws_rd_still_above_10pp
+prior_cesarean_history,mild,0.12,0.05,2.0,26.54824289068453,2.6095110040227785,1.9215555606296526,,,,,,
+prior_cesarean_history,moderate,0.12,0.12,4.0,19.0586449380908,2.1554474198510403,9.411153513223383,,,,,,
+prior_cesarean_history,strong,0.12,0.2,6.0,11.175798405647289,1.6775427883003573,17.294000045666895,,,,,,
+prior_cesarean_history,tipping_point_at_max_delta_p=0.3,0.12,0.3,19.58358791793959,0.0,1.0,28.469798451314183,,,,,,
+prior_cesarean_history,monte_carlo_summary,,,,,,,20000.0,18.556233853921974,6.302357688488874,28.171518171368106,100.0,86.77
+obstetric_severity_unmeasured,mild,0.08,0.03,1.5,27.830494184223177,2.687248637182563,0.6393042670910063,,,,,,
+obstetric_severity_unmeasured,moderate,0.08,0.08,2.5,24.118404891436704,2.462199898956976,4.351393559877479,,,,,,
+obstetric_severity_unmeasured,strong,0.08,0.15,3.5,17.763988899234672,2.0769577378956803,10.705809552079511,,,,,,
+obstetric_severity_unmeasured,tipping_point_at_max_delta_p=0.2,0.08,0.2,28.875259376296878,0.0,1.0,28.469798451314183,,,,,,
+obstetric_severity_unmeasured,monte_carlo_summary,,,,,,,20000.0,23.360606230840958,13.504310693679058,28.345253464293386,100.0,100.0
