@@ -1,8 +1,20 @@
 # Blocked items
 
+## Extension 1 — Quantitative bias analysis
+
+**Status: RESOLVED — complete, run for real.** No data-access blocker ever
+applied here: this notebook runs entirely off `outputs/final_tables/`,
+already committed to the repository. The one remaining open item is
+non-blocking: the placeholder confounder-prevalence/effect-size ranges in
+the notebook's Section 2 should be replaced with real cited published
+estimates before the results are treated as final for publication — see
+`01_quantitative_bias/README.md`.
+
 ## Extension 2 — Causal heterogeneity / DR-learner
 
-**Status: notebook complete, not run on real data.**
+**Status: RESOLVED — run on the real NFHS-5 cohort (n=200,794).** See
+`02_causal_heterogeneity/README.md` for final results. (Original blocker
+text kept below for reference.)
 
 **Blocker:** this development environment has no access to
 `data/processed/df_model_v2.parquet` or any NFHS-5 microdata — by design,
@@ -59,3 +71,18 @@ cross-fitted AIPW, and the paired-bootstrap change estimator — has been
 verified end-to-end against synthetic NFHS-4/NFHS-5-shaped datasets with a
 known injected change in effect size, which it correctly recovered (see
 that folder's README).
+
+## Extension 5 — First-birth AIPW
+
+**Status: notebook complete, not run on real data.**
+
+**Blocker:** same as Extension 2 — this environment has no access to
+`data/processed/df_model_v2.parquet` or any NFHS-5 microdata.
+
+**What's needed next:** run `extensions_work/05_first_birth/notebook.ipynb`
+locally, where `data/processed/df_model_v2.parquet` already exists. Once
+run, fill in the final estimates/QA results into `05_first_birth/README.md`.
+
+The notebook's logic has been verified end-to-end against a synthetic
+dataset extended with a realistic `age_at_first_birth` field (see that
+folder's README).

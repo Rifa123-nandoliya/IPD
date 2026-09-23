@@ -17,7 +17,7 @@ expected to be contributed separately.
 | 1 — Quantitative bias analysis | `01_quantitative_bias/` | Complete | Fully executed for real (no raw data needed — runs off already-frozen `outputs/final_tables/`). Finding is robust: it would take an implausibly extreme unmeasured confounder (~19-29x risk ratio) to erase the 28.47pp gap. Placeholder parameter ranges still need real literature citations — see folder README. |
 | 2 — Causal heterogeneity / DR-learner | `02_causal_heterogeneity/` | Complete | Run on the real NFHS-5 cohort (n=200,794). See folder README for final results: the gap ranges ~15-42pp across women, driven mainly by one state, then education/wealth; significantly larger in rural areas; no clear social-group effect. |
 | 3 — NFHS-4 → NFHS-5 temporal AIPW | `03_nfhs4_nfhs5_temporal/` | Partial | Notebook complete and logic-verified against synthetic data. Additionally blocked on: (a) an authorized local NFHS-4 Birth Recode to run the harmonization helper against, and (b) verifying `state`/`social_group` harmonization against the NFHS-4 recode manual (see `BLOCKED.md`). |
-| 5 — First-birth AIPW | `05_first_birth/` | In progress | See folder README for current state. |
+| 5 — First-birth AIPW | `05_first_birth/` | Partial | Notebook complete and logic-verified against synthetic data (no NFHS access in this environment). Not yet run on the real cohort — do that locally, then fill in the folder README's final estimates. |
 
 ## Shared infrastructure
 
