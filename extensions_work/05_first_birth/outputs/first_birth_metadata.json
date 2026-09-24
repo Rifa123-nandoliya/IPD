@@ -1,0 +1,32 @@
+{
+  "random_state": 42,
+  "cohort": {
+    "n_first_birth_total": 82426,
+    "n_excluded_missing_age_at_first_birth": 0,
+    "n_first_birth_modeling": 82426
+  },
+  "confounder_set": [
+    "age_at_first_birth",
+    "wealth_index",
+    "education_years",
+    "residence",
+    "religion",
+    "social_group",
+    "twin_order",
+    "state"
+  ],
+  "birth_order_excluded_reason": "Constant (== 1) within this cohort; would be a degenerate predictor.",
+  "age_at_first_birth_included_reason": "Exact age at the analyzed birth by construction for birth_order==1 records -- unlike maternal_age, which is age at interview and not verified as age at the analyzed birth (see notebooks/v2/06).",
+  "nuisance_models": "identical architecture to notebooks/v2/07, refit independently on the first-birth cohort",
+  "comparison_to_primary": {
+    "method": "side-by-side point estimates and CIs, not a formal joint difference CI",
+    "reason": "First-birth women are a subset of, not independent from, the full analytic cohort; naively pairing bootstrap replicates (as Extension 3 does for the genuinely independent NFHS-4/NFHS-5 samples) would understate their true correlation and produce an invalid interval.",
+    "full_cohort_rd_pct": 28.469798451314183,
+    "first_birth_rd_pct": 28.90756688823293,
+    "ci_overlap": true
+  },
+  "limitations": [
+    "Removes prior-Cesarean confounding by construction only -- other first-birth-specific unmeasured obstetric indications (fetal compromise, labor dystocia) are not addressed.",
+    "Not claimed as a novel first-of-its-kind low-risk/nulliparous sector analysis in India."
+  ]
+}

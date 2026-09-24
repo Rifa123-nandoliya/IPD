@@ -1,0 +1,2 @@
+r1_hat_private_risk_pct,r0_hat_public_risk_pct,risk_difference_pct,risk_difference_ci_low_pct,risk_difference_ci_high_pct,risk_ratio,risk_ratio_ci_low,risk_ratio_ci_high,n_analytic,n_private,n_public
+49.46349753741941,20.55593064918647,28.90756688823293,27.882742298174644,29.95107628309082,2.406288403165876,2.32918218705935,2.4810918624555125,82426,23987,58439

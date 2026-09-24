@@ -1,0 +1,16 @@
+harmonized_name,role,nfhs5_source,nfhs4_source,verified,harmonization_note
+facility_type,exposure,"m15 (recoded: 10-13 home, 20-27 public, 30-33 private, else other)",m15 (same recode function),True,"DHS place-of-delivery coding is stable across DHS-7-generation surveys, but the exact 96/other boundary should still be spot-checked against the NFHS-4 recode manual before trusting silently."
+csection,outcome,m17,m17,True,Direct match.
+respondent_id,design,caseid,caseid,True,Round-specific identifier; never pooled as if the same respondent.
+cluster_number,design,v001,v001,True,Round-specific PSU; bootstrap resampling stays within round.
+sample_stratum_v022,design,v022,v022,True,Round-specific sampling stratum.
+sample_weight_normalized,design,v005 / 1e6,v005 / 1e6,True,Each round uses its own round-specific weight; never mixed across rounds.
+birth_order,confounder,bord,bord,True,Direct match.
+twin_order,confounder,b0,b0,True,Direct match.
+wealth_index,confounder,v190,v190,True,"Direct match, but DHS wealth-index construction methodology has known cross-round revisions -- treat cross-round wealth_index comparisons as ordinal within-round, not as a continuously comparable scale across rounds."
+education_years,confounder,v133 (97 -> missing),v133 (97 -> missing),True,Direct match.
+residence,confounder,v025,v025,True,Direct match.
+religion,confounder,v130,v130,True,Direct match.
+social_group,confounder,s116 (8 -> missing),s116 (8 -> missing),False,"NOT YET VERIFIED for NFHS-4: confirm s116 exists identically in the NFHS-4 Birth Recode before treating it as harmonized. If absent or differently coded, it is dropped from the reduced/sensitivity confounder set below."
+state,confounder,v024,v024,False,State/UT boundary changes between 2015-16 and 2019-21 (e.g. new union territories) require an explicit crosswalk of state codes before pooling -- NOT built automatically here; verify locally before trusting a pooled state effect.
+survey_round,design (derived),n/a,n/a,True,"New column: 'NFHS-4' / 'NFHS-5', the time indicator for the pooled comparison."

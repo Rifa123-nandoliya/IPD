@@ -1,0 +1,3 @@
+cohort,n_total,n_excluded_missing_age_at_first_birth,facility_type,n,raw_csection_prevalence_pct,weighted_csection_prevalence_pct
+first_birth_modeling,82426,0,public,58439,17.2675781584216,18.09670148921421
+first_birth_modeling,82426,0,private,23987,50.52736899153708,51.22304711938135
