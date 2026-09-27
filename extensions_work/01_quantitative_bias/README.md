@@ -1,145 +1,164 @@
 # Extension 1 — Quantitative Bias Analysis (QBA)
 
-**Status: complete. Fully executed for real (not synthetic) in this
-environment, since it only depends on already-frozen, already-committed
-files (`outputs/final_tables/final_aipw_overall_table.csv`) — no raw NFHS
-data needed.**
+**Status: illustrative scenario analysis — NOT evidence-calibrated.** Revised
+2026-09-27 following an external implementation review. Fully executed
+for real (needs no raw data — runs off already-frozen
+`outputs/final_tables/`), but every numeric parameter in Section 2 except
+the multiparous fraction is an **unsourced hypothetical placeholder**. Do
+not cite the numbers below as a finished, literature-calibrated sensitivity
+analysis until real citations replace those placeholders (see
+"What still needs to happen").
+
+## What changed in this revision
+
+An external review found the previous version overstated its own rigor.
+Fixed here:
+
+- **Structural-zero handling.** Prior Cesarean is *impossible* for first
+  births (~41% of the cohort). The previous version applied a
+  whole-cohort prevalence gap anyway. This version scopes the
+  prior-Cesarean scenario to the multiparous population only, then dilutes
+  its whole-cohort effect by the multiparous share — a real, sourced
+  number (58.97%, from `notebooks/v2/01`'s own frozen output), not a guess.
+- **Overstated framing.** "Robust finding" and "19-29x is biologically
+  implausible" are removed. The bias-factor formula is now described
+  precisely as a specific binary-U, constant-risk-ratio simplification —
+  not "the general E-value framework" — and matching its arithmetic to the
+  project's own E-value is now labeled a formula-consistency check, not
+  input validation.
+- **Tipping-point logic.** Previously could return a large-but-finite
+  "tipping" risk ratio even when no finite risk ratio could actually close
+  the gap. Now checks the analytic limit (`BF → p1/p0` as `RR_UY → ∞`) and
+  reports **"unattainable"** when that limit doesn't reach the reference
+  risk ratio.
+- **Parameter bounds.** `bias_factor()` now asserts `0 ≤ p0, p1 ≤ 1` and
+  `RR_UY > 0`, and rejects out-of-range inputs rather than silently
+  computing with them.
+- **`assumptions_sources.csv` schema.** Expanded to 15 columns (target
+  population, association measure, source title/DOI/year/population,
+  transportability note, analyst decision) with literal
+  `hypothetical / unsourced` entries — no bare `TODO` disguised as sourced.
+- **Heatmap honesty.** The RD=0 contour is only drawn when it actually
+  falls inside the plotted grid; otherwise the plot says so explicitly
+  instead of implying a tipping point that isn't shown.
+- **Monte Carlo framing.** Explicitly labeled as scenario exploration over
+  arbitrary, unsourced parameter support — not a confidence statement, and
+  it excludes the primary AIPW estimate's own sampling uncertainty.
 
 ## Research question
 
-How robust is the 28.47 pp adjusted private-vs-public Cesarean risk
-difference to plausible unmeasured clinical confounding — especially prior
+How would the 28.47 pp adjusted private-vs-public Cesarean risk difference
+move under stated, hypothetical unmeasured confounding — especially prior
 Cesarean history and unmeasured obstetric-severity indications?
 
 ## Method
 
-Uses the same bias-factor formula that underlies this project's own
-E-value (VanderWeele & Ding, 2017): for an unmeasured confounder with a
-given sector prevalence gap and a given confounder→outcome risk ratio,
-there's a closed-form maximum bias factor on the observed risk ratio. This
-notebook evaluates that formula across a **grid** of scenarios (not just
-one worst-case number) for two confounder classes:
+Same bias-factor formula underlying this project's own E-value
+(VanderWeele & Ding, 2017, DOI 10.7326/M16-2607), applied as a grid rather
+than a single worst-case number, for two confounder classes:
 
-1. **`prior_cesarean_history`** — genuinely unmeasured in NFHS-5 beyond a
-   limited recall window (documented in `notebooks/v2/01`).
-2. **`obstetric_severity_unmeasured`** — a placeholder class for clinical
-   severity/indications beyond NFHS-5's coarse `s434`/`s435` items.
+1. **`prior_cesarean_history`** — scoped to the multiparous population
+   (`birth_order >= 2`), then diluted by the multiparous fraction
+   (0.5897) to get its effect on the whole-cohort estimate.
+2. **`obstetric_severity_unmeasured`** — explicitly labeled a single
+   hypothetical composite, not a defensible combined diagnosis.
 
-It reports: a deterministic scenario grid, a Monte Carlo distribution over
-plausible parameter ranges, representative mild/moderate/strong scenarios,
-the exact "tipping point" (how extreme a confounder would need to be to
-erase the finding entirely), and a cross-check against the project's
-existing E-value.
-
-**⚠️ Critical caveat, repeated from the notebook: the specific numeric
-ranges used for confounder prevalence and strength are illustrative
-placeholders — no literature search was performed to source them.** See
-"What still needs to happen" below.
-
-## Results (real, from the actual frozen primary estimate)
+## Results (real, from the frozen primary estimate; parameters still hypothetical)
 
 **Locked reference:** RD = 28.4698 pp, RR = 2.7260 (95% CI 2.6566–2.8035), n = 200,794.
 
-### 1. E-value cross-check — confirms the method is implemented correctly
+### E-value formula-consistency check
 
-Recomputed E-value from this notebook's own formula: **4.8951** for the
-point estimate, **4.7544** for the CI bound closest to the null. The
-handoff document independently reports **4.90** for this project's
-E-value — matching almost exactly, confirming this notebook's bias-factor
-implementation is mathematically consistent with the project's existing
-E-value calculation.
+Recomputed **4.8951** vs. the project's reported **4.90** — confirms this
+notebook's formula is implemented correctly. **This does not validate any
+of the prevalence/risk-ratio inputs used elsewhere in this notebook.**
 
-### 2. The finding is robust across a wide range of plausible-looking scenarios
+### Representative scenarios (all parameters hypothetical)
 
-| Confounder | Scenario | Prevalence gap | Effect (RR) | Adjusted RD |
+| Confounder | Scenario | Δp (whole-cohort) | RR_UY | Adjusted RD (fixed-r0 translation) |
 |---|---|---:|---:|---:|
-| Prior Cesarean history | Mild | +5 pp | 2.0× | 26.55 pp |
-| Prior Cesarean history | Moderate | +12 pp | 4.0× | 19.06 pp |
-| Prior Cesarean history | Strong | +20 pp | 6.0× | 11.18 pp |
-| Obstetric severity (unmeasured) | Mild | +3 pp | 1.5× | 27.83 pp |
-| Obstetric severity (unmeasured) | Moderate | +8 pp | 2.5× | 24.12 pp |
-| Obstetric severity (unmeasured) | Strong | +15 pp | 3.5× | 17.76 pp |
+| Prior Cesarean (multiparous-scoped) | Mild | +2.9 pp | 2.0× | 27.26 pp |
+| Prior Cesarean (multiparous-scoped) | Moderate | +7.1 pp | 4.0× | 21.77 pp |
+| Prior Cesarean (multiparous-scoped) | Strong | +11.8 pp | 6.0× | 14.83 pp |
+| Obstetric severity (hypothetical composite) | Mild | +3 pp | 1.5× | 27.83 pp |
+| Obstetric severity (hypothetical composite) | Moderate | +8 pp | 2.5× | 24.12 pp |
+| Obstetric severity (hypothetical composite) | Strong | +15 pp | 3.5× | 17.76 pp |
 
-Even the "strong" scenarios — a confounder that's 20 percentage points more
-common in private facilities *and* multiplies C-section risk 6-fold — only
-attenuates the gap from 28.47 pp down to about 11-18 pp. It doesn't come
-close to erasing it.
+### Tipping points (now correctly checked for attainability)
 
-### 3. What it would actually take to erase the finding (tipping point)
+- **Prior Cesarean:** at the most extreme tested prevalence gap, would
+  need **RR_UY ≈ 32.5** to bring the gap to zero — attainable within the
+  (very wide) search range, but far outside any plausible single-confounder
+  effect size.
+- **Obstetric severity:** similarly, **RR_UY ≈ 28.9** at its most extreme
+  tested gap.
 
-- **Prior Cesarean history:** even at the *most extreme* prevalence gap
-  tested (+30 pp — i.e., private-sector patients being 30 percentage points
-  more likely to have a prior C-section), the confounder would need to
-  multiply C-section risk by **~19.6×** to bring the adjusted gap to zero.
-- **Obstetric severity:** at its most extreme tested prevalence gap
-  (+20 pp), it would need to multiply risk by **~28.9×**.
+### Monte Carlo (illustrative scenario exploration, not a confidence statement)
 
-Both are far outside any biologically plausible single-confounder risk
-ratio for this outcome — real prior-Cesarean effects on repeat-Cesarean
-risk, while strong, are not remotely 20-30× effects.
+| Confounder | Median adjusted RD | Range (over stated support) | % draws RD > 0 |
+|---|---:|---|---:|
+| Prior Cesarean (multiparous-scoped) | 21.34 pp | [10.22, 28.28] | 100% |
+| Obstetric severity (hypothetical) | 23.36 pp | [13.50, 28.35] | 100% |
 
-### 4. Monte Carlo summary (20,000 draws per confounder, over the placeholder ranges)
+These percentages describe the **chosen parameter support**, not
+statistical confidence or clinical plausibility, and exclude the AIPW
+estimate's own sampling uncertainty.
 
-| Confounder | Median adjusted RD | 95% range | % draws RD > 0 | % draws RD > 10pp |
-|---|---:|---|---:|---:|
-| Prior Cesarean history | 18.56 pp | [6.30, 28.17] | 100% | 86.8% |
-| Obstetric severity (unmeasured) | 23.36 pp | [13.50, 28.35] | 100% | 100% |
+### Headline framing (revised)
 
-Across every one of the 20,000 random draws per confounder (spanning the
-full stated placeholder ranges), the adjusted risk difference **never**
-crossed zero.
-
-### Headline conclusion
-
-Under the parameter ranges tested here — which are wide enough to include
-what would already be considered fairly extreme, clinically implausible
-unmeasured confounders — the 28.47 pp private-vs-public adjusted gap does
-not get explained away. It takes a confounder several times stronger than
-anything in the tested range (prevalence gap and risk ratio both) to bring
-the estimate to zero. This is consistent with, and quantitatively extends,
-the project's own E-value finding (4.90).
+Under the tested hypothetical parameter ranges, the adjusted gap
+attenuates but does not reach zero within plausible-looking scenarios, and
+the exact tipping points require confounder strengths (RR_UY ≈ 29-33×)
+that are large. **This is not evidence that no such confounder exists** —
+it describes how the estimate moves under stated, unsourced assumptions.
 
 ## ⚠️ What still needs to happen before this is publication-ready
 
-The prevalence and effect-size ranges above (`p0_baseline`, `delta_p_grid`,
-`rr_ud_grid` in the notebook's Section 2) are **illustrative placeholders**,
-not sourced from any literature search. Before reporting these results as
-final:
+Every row in `assumptions_sources.csv` currently reads
+`hypothetical / unsourced`. Before reporting these results as final:
 
-1. Find published, ideally India-specific, estimates of:
-   - prior-Cesarean prevalence among institutional deliveries (and, if
-     available, split by facility sector)
-   - the risk ratio of repeat Cesarean given a prior Cesarean
-   - analogous figures for the "obstetric severity" class, or narrow that
-     class to specific named conditions with known prevalence/effect data
-2. Update `CONFOUNDER_SPECS` in the notebook's Section 2 and the `source`
-   column of `assumptions_sources.csv` — no other code changes are needed.
-3. Re-run the notebook; the grid, Monte Carlo, and tipping-point numbers
-   will update automatically.
+1. Find published, ideally India-specific, sector-stratified estimates for
+   each parameter, matching NFHS-5's population, institutional-delivery
+   denominator, parity restriction, and time period — record the exact
+   citation (title, authors, year, DOI/URL) and whether it reports a
+   crude RR, adjusted RR, odds ratio, or hazard ratio (do not silently
+   substitute OR for RR).
+2. Update `CONFOUNDER_SPECS` (notebook Section 2) and
+   `assumptions_sources.csv`'s columns — no other code changes are needed.
+3. Consider separating `obstetric_severity_unmeasured` into named
+   individual conditions with their own sourced parameters, rather than
+   one invented composite.
+4. Re-run; the grid, Monte Carlo, and tipping-point numbers update
+   automatically.
 
 ## Inputs
 
-- `outputs/final_tables/final_aipw_overall_table.csv` (frozen primary estimate — the only required input)
-- `notebooks/v2/01_v2_data_audit_and_cohort.ipynb` (documents why prior-Cesarean is unmeasured)
+- `outputs/final_tables/final_aipw_overall_table.csv` (frozen primary estimate)
+- `notebooks/v2/01_v2_data_audit_and_cohort.ipynb` (source of the multiparous fraction and the prior-Cesarean-unmeasured documentation)
 - `notebooks/v2/07_aipw_primary_analysis.ipynb`, `notebooks/v2/09_sensitivity_analyses.ipynb` (methodological context, E-value)
 
 ## Files produced
 
 - `notebook.ipynb`
-- `outputs/qba_scenario_results.csv` — full deterministic grid (550 rows: 2 confounders × their prevalence-gap × risk-ratio grids)
-- `outputs/qba_summary.csv` — representative scenarios, tipping points, and Monte Carlo summary stats
-- `outputs/qba_heatmap.png` — bias-adjusted RD across the grid, per confounder, with the RD=0 tipping-point contour and representative-scenario markers
-- `outputs/assumptions_sources.csv` — every bias parameter with its assumed range, rationale, and a `source` column (currently `TODO: cite...`)
+- `outputs/qba_scenario_results.csv` — full deterministic grid (550 rows), now with `dilution_factor`/whole-cohort-vs-within-target-population columns
+- `outputs/qba_summary.csv` — representative scenarios, tipping points (with attainability status), Monte Carlo summary
+- `outputs/qba_heatmap.png` — bias-adjusted RD across the grid, only draws the RD=0 contour when it's inside the plotted domain
+- `outputs/assumptions_sources.csv` — 15-column schema, every parameter labeled sourced or `hypothetical / unsourced`
 
 ## QA / interpretation checks
 
-- **Reproduces the primary estimate exactly at no unmeasured confounding** (`delta_p=0` or `rr_ud=1`) — asserted in the notebook, passed.
-- **E-value cross-check passed** (4.8951 recomputed vs. 4.90 reported) — confirms correct implementation.
-- Results are reported as scenario-dependent ("under these assumptions..."), never as proof unmeasured confounding is absent.
-- The placeholder nature of the parameter ranges is flagged in the notebook, this README, and `assumptions_sources.csv` — not silently presented as sourced.
+- Reference tests pass: `BF(p0,p0,rr)=1`, `BF(p0,p1,1)=1`, out-of-range `p0`/`p1` rejected.
+- Reproduces the primary estimate exactly at no unmeasured confounding.
+- E-value formula-consistency check passes (4.8951 vs. 4.90) — explicitly labeled as a formula check, not input validation.
+- No sentence states unmeasured confounding is absent or gives an empirical probability that the true RD exceeds zero.
 
 ## Limitations
 
-- Assumes the confounder's effect on the outcome is constant across sectors (standard simplifying assumption for this class of bias-factor sensitivity analysis; not separately tested).
-- The two confounder classes are treated independently — a combined "both confounders operating simultaneously" scenario is not modeled (would require a joint bias formula and additional assumptions about their correlation).
-- As stated above, the specific numeric ranges are placeholders pending a real literature search.
+- The multiparous-dilution correction assumes a similar parity mix across
+  sectors (not verified here) — a real sector-specific parity composition
+  would refine this further.
+- Assumes each confounder's effect on the outcome is constant across
+  sectors (standard simplifying assumption for this bias-factor method).
+- The two confounder classes are treated independently, not jointly.
+- As stated throughout: every numeric parameter besides the multiparous
+  fraction is a hypothetical placeholder pending a real literature search.
