@@ -14,10 +14,10 @@ expected to be contributed separately.
 
 | Extension | Folder | Status | Notes |
 |---|---|---|---|
-| 1 — Quantitative bias analysis | `01_quantitative_bias/` | Complete | Fully executed for real (no raw data needed — runs off already-frozen `outputs/final_tables/`). Finding is robust: it would take an implausibly extreme unmeasured confounder (~19-29x risk ratio) to erase the 28.47pp gap. Placeholder parameter ranges still need real literature citations — see folder README. |
-| 2 — Causal heterogeneity / DR-learner | `02_causal_heterogeneity/` | Complete | Run on the real NFHS-5 cohort (n=200,794). See folder README for final results: the gap ranges ~15-42pp across women, driven mainly by one state, then education/wealth; significantly larger in rural areas; no clear social-group effect. |
-| 3 — NFHS-4 → NFHS-5 temporal AIPW | `03_nfhs4_nfhs5_temporal/` | Partial | Notebook complete and logic-verified against synthetic data. Additionally blocked on: (a) an authorized local NFHS-4 Birth Recode to run the harmonization helper against, and (b) verifying `state`/`social_group` harmonization against the NFHS-4 recode manual (see `BLOCKED.md`). |
-| 5 — First-birth AIPW | `05_first_birth/` | Partial | Notebook complete and logic-verified against synthetic data (no NFHS access in this environment). Not yet run on the real cohort — do that locally, then fill in the folder README's final estimates. |
+| 1 — Quantitative bias analysis | `01_quantitative_bias/` | Complete (repaired 2026-09-27) | Fully executed for real. Status downgraded from "robust finding" to "illustrative scenario analysis — not evidence-calibrated" per external review: every parameter except the (sourced) multiparous fraction is an unsourced placeholder. Prior-Cesarean scenario now correctly scoped to the multiparous population. See folder README. |
+| 2 — Causal heterogeneity / DR-learner | `02_causal_heterogeneity/` | **Reopened** — code repaired 2026-09-27, fresh run pending | An external review found a README transcription error, an unsafe merge, preprocessing leakage, and invalid CI-overlap "significance" claims. Architecture rebuilt (dev/test split, permutation importance, joint bootstrap); previously-saved outputs are now marked stale pending a fresh real-data run. See folder README/BLOCKED.md. |
+| 3 — NFHS-4 → NFHS-5 temporal AIPW | `03_nfhs4_nfhs5_temporal/` | Partial | Real crosswalk/descriptives/overlap-balance outputs now saved (NFHS-4 harmonization in progress). Not yet reviewed against the external-review checklist applied to 1/2/5. |
+| 5 — First-birth AIPW | `05_first_birth/` | Complete (repaired 2026-09-27) | Real run on actual NFHS-5 data: n=82,426, RD=28.9076pp, RR=2.4063. Fixed stale "not run" status text and an invalid CI-overlap "significance" claim per external review. Independent clean-run verification still pending. See folder README. |
 
 ## Shared infrastructure
 

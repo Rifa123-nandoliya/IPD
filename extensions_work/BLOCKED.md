@@ -2,37 +2,39 @@
 
 ## Extension 1 — Quantitative bias analysis
 
-**Status: RESOLVED — complete, run for real.** No data-access blocker ever
-applied here: this notebook runs entirely off `outputs/final_tables/`,
+**Status: RESOLVED — complete, run for real (repaired 2026-09-27 after an
+external implementation review; see CHANGELOG).** No data-access blocker
+ever applied here: this notebook runs entirely off `outputs/final_tables/`,
 already committed to the repository. The one remaining open item is
-non-blocking: the placeholder confounder-prevalence/effect-size ranges in
-the notebook's Section 2 should be replaced with real cited published
-estimates before the results are treated as final for publication — see
-`01_quantitative_bias/README.md`.
+non-blocking: every parameter in the notebook's Section 2 except the
+(sourced) multiparous fraction is a hypothetical placeholder and needs a
+real cited published estimate before the results are treated as final —
+see `01_quantitative_bias/README.md`.
 
 ## Extension 2 — Causal heterogeneity / DR-learner
 
-**Status: RESOLVED — run on the real NFHS-5 cohort (n=200,794).** See
-`02_causal_heterogeneity/README.md` for final results. (Original blocker
-text kept below for reference.)
-
-**Blocker:** this development environment has no access to
-`data/processed/df_model_v2.parquet` or any NFHS-5 microdata — by design,
-per the handoff's own data-access rule (NFHS microdata must never be
-uploaded into a shared/cloud session or committed to GitHub).
+**Status: REOPENED — code repaired 2026-09-27 following an external
+implementation review; a fresh real-data run is now required.** The
+notebook's architecture changed substantially (single development/test
+split replacing two independently-folded stages; safe merge validation;
+permutation importance; a genuine joint bootstrap for the headline
+contrasts) — the previously-saved outputs in
+`02_causal_heterogeneity/outputs/` come from the *old* architecture and
+are marked stale (see `outputs/STALE_PENDING_RERUN.md`). See
+`02_causal_heterogeneity/README.md` for the full list of what changed and
+what a fresh run needs to reproduce.
 
 **What's needed next:** run `extensions_work/02_causal_heterogeneity/notebook.ipynb`
 locally, in an environment where `data/processed/df_model_v2.parquet`
-already exists (the same file `notebooks/v2/06`–`07` use). If
-`outputs/tables/b4_aipw_row_level_nuisance.csv` also exists locally (i.e.
-Notebook 07 has already been run there), the notebook will automatically
-reuse its exact nuisance predictions; otherwise it refits identical
-machinery itself. Once run, fill in the final estimates/QA results into
-`02_causal_heterogeneity/README.md`.
+already exists. Once run, replace the "historical results" section of
+`02_causal_heterogeneity/README.md` with fresh numbers copy-checked
+directly against the new CSVs, and delete `outputs/STALE_PENDING_RERUN.md`.
 
-The notebook's logic has been verified end-to-end against synthetic,
-schema-matching data with a known injected heterogeneous effect, which the
-DR-learner correctly recovered (see that folder's README).
+The repaired notebook's logic has been verified end-to-end against
+synthetic data, including a constructed duplicate-`respondent_id` case with
+a matching fake frozen-nuisance file lacking a birth-level key, confirming
+the merge-safety fix correctly falls back to a local refit rather than
+silently accepting an unsafe merge (see that folder's README).
 
 ## Extension 3 — NFHS-4 → NFHS-5 temporal comparison
 
@@ -74,15 +76,13 @@ that folder's README).
 
 ## Extension 5 — First-birth AIPW
 
-**Status: notebook complete, not run on real data.**
+**Status: RESOLVED — real run completed on actual NFHS-5 data (n=82,426,
+RD=28.9076pp). Repaired 2026-09-27 following an external implementation
+review** (removed an invalid CI-overlap "significance" claim; explicitly
+disclosed the bootstrap's fixed-nuisance scope). See
+`05_first_birth/README.md` for final results.
 
-**Blocker:** same as Extension 2 — this environment has no access to
-`data/processed/df_model_v2.parquet` or any NFHS-5 microdata.
-
-**What's needed next:** run `extensions_work/05_first_birth/notebook.ipynb`
-locally, where `data/processed/df_model_v2.parquet` already exists. Once
-run, fill in the final estimates/QA results into `05_first_birth/README.md`.
-
-The notebook's logic has been verified end-to-end against a synthetic
-dataset extended with a realistic `age_at_first_birth` field (see that
-folder's README).
+**What's still open (non-blocking):** an independent clean-run
+verification — re-run from a clean kernel and confirm the same n=82,426,
+arm counts, RD, and RR are reproduced within numerical tolerance — has not
+yet been performed.

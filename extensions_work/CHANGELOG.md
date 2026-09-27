@@ -1,4 +1,39 @@
-# Changelog — extensions_work (Extensions 2 & 3)
+# Changelog — extensions_work (Extensions 1, 2, 3 & 5)
+
+## 2026-09-27 — Repairs following an external implementation review
+
+An external review of the submitted `extensions_work.zip` and its saved
+real-data outputs (Extensions 1, 2, 5) found real bugs and overclaiming
+that are fixed as of this date. Full detail is in each extension's own
+README; summary:
+
+- **Extension 1:** prior-Cesarean scenario now correctly scoped to the
+  multiparous population (was previously applied to the whole cohort
+  despite being structurally impossible for first births); tipping-point
+  search now reports "unattainable" instead of a large finite number when
+  no finite risk ratio can close the gap; `assumptions_sources.csv`
+  expanded to a 15-column schema with explicit `hypothetical / unsourced`
+  labels; status downgraded from "robust finding" to "illustrative
+  scenario analysis."
+- **Extension 2:** fixed a README transcription bug (Q3/Q5 risk ratios);
+  the optional reuse of Notebook 07's frozen nuisances now requires a
+  verified birth-level key and a validated one-to-one merge instead of
+  merging on `respondent_id` alone; rebuilt around a single development/
+  test split (replacing two independently-folded stages) so test is
+  genuinely never fit on; feature importance switched from in-sample
+  impurity to held-out permutation importance; added a genuine joint/
+  paired bootstrap for the two headline subgroup contrasts, replacing an
+  invalid CI-overlap "significance" claim. Previously-saved outputs are
+  from the old architecture and are marked stale pending a fresh run.
+- **Extension 5:** fixed stale README/BLOCKED text that said "not run on
+  real data" after a real run (n=82,426) had already produced saved
+  results; removed an invalid CI-overlap "significance" claim from the
+  full-cohort comparison; explicitly disclosed that the bootstrap holds
+  nuisance predictions fixed per replicate (matching Notebook 07's own
+  documented convention).
+
+Extension 3 was not covered by this review and has not been checked
+against the same checklist.
 
 ## Packages added
 
