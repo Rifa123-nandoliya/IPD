@@ -23,7 +23,7 @@
     "reason": "First-birth women are a subset of, not independent from, the full analytic cohort; naively pairing bootstrap replicates (as Extension 3 does for the genuinely independent NFHS-4/NFHS-5 samples) would understate their true correlation and produce an invalid interval.",
     "full_cohort_rd_pct": 28.469798451314183,
     "first_birth_rd_pct": 28.90756688823293,
-    "ci_overlap": true
+    "note": "No significance inference is drawn from CI overlap -- first births are a subset of the full cohort, so their sampling variability is correlated; see the notebook's Section 7 markdown."
   },
   "limitations": [
     "Removes prior-Cesarean confounding by construction only -- other first-birth-specific unmeasured obstetric indications (fetal compromise, labor dystocia) are not addressed.",
