@@ -1,176 +1,162 @@
 # Extension 2 — Causal heterogeneity / DR-learner
 
-**Status: complete. Run on the real NFHS-5 cohort (n = 200,794, matching the
-frozen primary analytic sample exactly). Results below.**
+**Status: code repaired following an external implementation review; a
+fresh real-data run is now required.** The results below from the
+previous run are kept for historical reference and are **stale** — they
+came from an architecture this revision replaces. Do not cite the numbers
+in this file as current until you re-run the notebook and this README is
+updated from that fresh output.
+
+## What changed in this revision (2026-09-27)
+
+An external review of the submitted notebook and its saved outputs found
+several real problems, fixed here:
+
+- **README transcription bug (fixed immediately).** The previous README
+  reported Q3 RR = 4.27 and Q5 RR = 4.70; the actual saved CSV had
+  3.4271 and 3.4704. Going forward, README numbers should be copy-checked
+  directly against the saved CSV, not retyped from memory.
+- **Unsafe merge repaired.** The optional reuse of Notebook 07's frozen
+  row-level nuisances merged on `respondent_id` alone — not safe, since a
+  respondent can have multiple analytic births, making this a potential
+  many-to-many merge that matching row counts didn't rule out. It now
+  requires a verified birth-level key (e.g. `birth_index`) in **both**
+  frames and a `pandas.merge(..., validate="one_to_one")` that actually
+  succeeds; since the saved nuisance file doesn't currently carry such a
+  key, this safely falls back to a local refit by default.
+- **Architecture repaired: single dev/test split, not two independently
+  folded stages.** The previous design fit Stage 1 (nuisances) and Stage 2
+  (the CATE model) on *independent* fold partitions and called the result
+  "honest" — not fully justified, since Stage 2's training targets could
+  have come from Stage-1 models that also saw some of Stage 2's own
+  held-out respondents. This version uses one respondent-grouped
+  development/test split: Stage 1, preprocessing, Stage 2, and the
+  quantile-bin thresholds are *all* fit on development only, and test is
+  scored but never fit by anything — the "simpler, fully auditable"
+  alternative the review explicitly endorses, at the cost of a smaller
+  effective validation sample.
+- **Preprocessing leakage repaired.** One-hot encoding and numeric
+  imputation are now fit on development only and applied to test, not fit
+  on the full cohort before any split.
+- **Feature importance repaired.** Impurity-based importance (in-sample,
+  and not a "percent of explained heterogeneity") is replaced with
+  permutation importance evaluated on the untouched test set, aggregated
+  back to each source variable across its one-hot dummies.
+- **Invalid "significance" claims removed.** The previous version treated
+  non-overlapping marginal CIs (rural vs. urban, Q5 vs. Q1) as evidence of
+  a real difference — not a valid test, since both groups are drawn from
+  the same dataset and their sampling variability is correlated. This
+  version computes a genuine joint/paired bootstrap (one PSU resample per
+  replicate, both groups computed from that same draw) for these two
+  headline contrasts, giving a direct, valid CI for the difference itself.
+- **Notebook verdict no longer overridden by the README.** If the
+  monotonicity check reports the bins aren't strictly increasing, the
+  README will report that plainly rather than asserting "convincing"
+  heterogeneity anyway.
 
 ## Research question
 
 Among observed patient and contextual characteristics, where does the
 adjusted private-vs-public Cesarean contrast appear larger or smaller?
 
-## Method
+## Method (revised)
 
-Honest DR-learner (Kennedy, 2020) on the same public/private analytic
-cohort and 8-variable confounder set as
-`notebooks/v2/07_aipw_primary_analysis.ipynb`:
+1. **Development/test split.** One respondent-grouped 60/40 split.
+   Everything below is fit on development only; test is scored, never fit.
+2. **Stage 1 (nuisance models).** Cross-fitted within development
+   (identical specification to Notebook 07); a single propensity/outcome
+   fit on all of development scores test directly.
+3. **Pseudo-outcome.** `tau_hat = psi1 - psi0` for both splits.
+4. **Stage 2 (CATE model).** `RandomForestRegressor` fit on development's
+   `tau_hat`, with preprocessing (imputation/encoding) also fit on
+   development only.
+5. **Quantile bins.** Thresholds chosen from development's predicted
+   distribution, applied to (never re-derived from) test.
+6. **Validation.** Realized AIPW effects per bin/subgroup computed on test
+   only. The two headline contrasts (rural vs. urban, Q5 vs. Q1) get a
+   proper joint/paired PSU bootstrap for a direct difference CI.
 
-1. **Stage 1 (nuisance models).** Reuses Notebook 07's exact cross-fitted
-   `e_hat`/`mu1_hat`/`mu0_hat` from `outputs/tables/b4_aipw_row_level_nuisance.csv`
-   when that local file exists, so the pseudo-outcome ties directly back to
-   the frozen primary estimate (RD 28.47 pp / RR 2.73). Falls back to an
-   independent re-fit with identical machinery
-   (`extensions_work/shared/utils.cross_fit_nuisances`) if that file isn't
-   present locally, and prints which path was taken — never silently.
-2. **Pseudo-outcome.** `tau_hat = psi1 - psi0` (the standard AIPW doubly
-   robust contrast per record).
-3. **Stage 2 (CATE model).** A `RandomForestRegressor` regresses `tau_hat`
-   on a pre-specified moderator set (`wealth_index`, `education_years`,
-   `residence`, `social_group`, `state`, `twin_order` — see
-   `../shared/data_dictionary.md`), survey-weighted, cross-fitted with a
-   fresh respondent-grouped `GroupKFold` independent of the Stage-1 folds,
-   producing an out-of-fold predicted CATE for every record ("honest").
-4. **Validation.** Records are binned into quintiles of predicted CATE;
-   the *realized* AIPW risk difference is estimated per bin (PSU-cluster
-   bootstrap CI, 500 replicates), and a monotonicity/CI-separation check
-   decides whether to report suggestive heterogeneity or honestly report it
-   as weak/null. The same table also carries pre-specified subgroup
-   summaries (`residence`, `social_group`).
+No dedicated causal-forest package (`econml`/`grf`) is used.
 
-No dedicated causal-forest package (`econml`/`grf`) is used — this keeps
-`requirements_extensions.txt` empty for this extension; see the notebook's
-final documentation section for the rationale.
+## Historical results (STALE — from the previous full-cohort, no-split architecture)
 
-## Results
+These come from a real run of the *previous* code version (n = 200,794,
+matching the frozen primary sample) and are kept only so the transcription
+fix is visible in context. **They do not reflect the repaired architecture
+above and must not be treated as current:**
 
-**Sample:** n = 200,794 (public + private analytic cohort — matches the
-frozen primary sample exactly, confirmed by the quintile bin sizes summing
-to 200,794).
-
-### 1. Effect ranges widely across women — not a single fixed gap
-
-Binning records by their predicted individual contrast (Stage-2 output)
-and estimating the *realized*, independently-computed AIPW risk difference
-within each bin:
-
-| Predicted-CATE group | n | Realized adjusted RD | 95% CI | Realized RR |
+| Predicted-CATE group | n | Realized adjusted RD | 95% CI | Realized RR (corrected) |
 |---|---:|---:|---|---:|
 | Q1 (lowest) | 40,233 | 14.81 pp | [13.37, 16.41] | 1.84 |
 | Q2 | 42,480 | 26.42 pp | [24.85, 28.00] | 2.19 |
-| Q3 | 47,694 | 32.05 pp | [30.48, 33.57] | 4.27 |
+| Q3 | 47,694 | 32.05 pp | [30.48, 33.57] | **3.43** (was misreported as 4.27) |
 | Q4 | 35,370 | 31.53 pp | [29.55, 33.57] | 3.98 |
-| Q5 (highest) | 35,017 | 42.04 pp | [40.47, 43.57] | 4.70 |
+| Q5 (highest) | 35,017 | 42.04 pp | [40.47, 43.57] | **3.47** (was misreported as 4.70) |
 
-The gap ranges from **~15 pp in the lowest-predicted group to ~42 pp in the
-highest**, and Q1's and Q5's confidence intervals do not overlap at all —
-a large, statistically clear difference. Q3 and Q4 are essentially tied
-(32.05 vs 31.53 pp, well within noise for adjacent bins of this size); this
-is not a meaningful reversal, and the notebook's strict automated
-monotonicity check (which requires every bin to be *strictly* larger than
-the last) can print "weak/inconsistent" because of this single near-tie —
-that check is stricter than the underlying evidence warrants here, and the
-Q1-vs-Q5 separation should be reported as genuine heterogeneity, not
-weak/null.
+`heterogeneity_modifier_summary.csv` from that same old run reported
+`state_19` at impurity-importance 0.332 — described at the time as "a
+third of the model's explanatory power." That characterization is now
+understood to be imprecise for two reasons (see "What changed" above):
+impurity importance isn't a variance-explained share, and it wasn't
+evaluated on held-out data. Whether `state_19` remains the top modifier
+under permutation importance on a genuine test split is an open question
+until the notebook is re-run.
 
-### 2. Geography — specifically one state — is the dominant driver
+## What still needs to happen
 
-`heterogeneity_modifier_summary.csv` (top of the ranked list):
-
-| Rank | Feature | Importance |
-|---:|---|---:|
-| 1 | `state_19` | 0.332 |
-| 2 | `state_8` | 0.092 |
-| 3 | `state_21` | 0.087 |
-| 4 | `state_32` | 0.087 |
-| 5 | `state_24` | 0.085 |
-| 6 | `state_27` | 0.084 |
-| 7 | `education_years` | 0.070 |
-| 8 | `wealth_index` | 0.055 |
-| 9-10 | `residence` (urban/rural) | 0.027 + 0.022 |
-| lower | `social_group` categories | 0.007-0.014 each |
-
-**One state (coded `19` in NFHS-5's `v024`) alone accounts for about a
-third of the model's total ability to distinguish where the gap is bigger
-or smaller** — more than the next several states combined. Education and
-wealth are the next most influential factors, well ahead of urban/rural
-residence and social group. *(State 19's actual name isn't decoded here —
-cross-reference NFHS-5's state code list before naming it in a report.)*
-
-### 3. The gap is significantly larger in rural areas than urban areas
-
-| Residence | n | Realized adjusted RD | 95% CI | Realized RR |
-|---|---:|---:|---|---:|
-| Urban (1) | 44,077 | 22.56 pp | [21.08, 24.12] | 1.90 |
-| Rural (2) | 156,717 | 30.79 pp | [30.00, 31.71] | 3.34 |
-
-These confidence intervals **do not overlap** (24.12 vs 30.00) — a
-confident, real finding: the private-sector Cesarean gap is meaningfully
-larger in rural areas than in cities, both in absolute (pp) and relative
-(risk ratio) terms.
-
-### 4. Social group shows no clear differentiation
-
-| Social group | n | Realized adjusted RD | 95% CI |
-|---|---:|---:|---|
-| 1 | 41,760 | 30.19 pp | [28.56, 31.89] |
-| 2 | 35,221 | 27.06 pp | [24.83, 29.33] |
-| 3 | 79,890 | 26.75 pp | [25.65, 27.70] |
-| 4 | 33,401 | 27.99 pp | [26.48, 29.65] |
-
-All four groups fall in a narrow 27-30 pp band with heavily overlapping
-confidence intervals — **no confident evidence that the gap differs by
-social group**, consistent with its low ranking in the modifier-importance
-table above.
-
-### Headline conclusion
-
-The adjusted private-vs-public Cesarean gap is not a single fixed number —
-it varies substantially across women, ranging from roughly 15 to 42
-percentage points depending on predicted characteristics. This variation is
-driven overwhelmingly by **geography** (one specific state contributes about
-a third of the explanatory power on its own), followed by **education** and
-**wealth**, and the gap is **significantly larger in rural areas than urban
-areas**. **Social group showed no statistically distinguishable effect on
-the size of the gap.**
+1. **Re-run this notebook** locally where `data/processed/df_model_v2.parquet`
+   exists, to produce real output under the repaired dev/test-split
+   architecture (expect a smaller effective test sample and wider CIs than
+   the historical full-cohort numbers above).
+2. **Update this README from that fresh output** — replace the "historical
+   results" section with the new `heterogeneity_individual_or_binned_summary.csv`,
+   `heterogeneity_modifier_summary.csv`, and `heterogeneity_headline_contrasts.csv`,
+   copy-checked directly against the CSVs.
+3. **Report the monotonicity/verdict exactly as printed**, without
+   overriding it with more confident language than the check itself
+   supports.
+4. Decode `state_19` (or whichever state ranks top) against the actual
+   NFHS-5 state code list before naming it in any report, and do not infer
+   a health-system mechanism from a code alone.
 
 ## Verification
 
-Before running on real data, the notebook's logic was smoke-tested
-end-to-end against a synthetic dataset with a deliberately injected
-treatment-effect gradient, which the Stage-2 model correctly recovered as
-the top modifier — confirming the DR-learner works as intended. A real bug
-surfaced only once run on the actual NFHS-5 file (a `TypeError` in the
-subgroup-bootstrap loop caused by how missing values are represented in a
-nullable-dtype column); it was reproduced on synthetic data with a matching
-dtype, fixed (`.fillna(False)` before converting to a plain boolean array),
-and confirmed resolved before this run.
+Smoke-tested end-to-end against synthetic data, including a deliberately
+constructed case with a duplicated `respondent_id` (multiple analytic
+births per respondent) and a matching fake frozen-nuisance file **without**
+a birth-level key — confirming the merge-safety fix correctly falls back to
+a local refit rather than silently accepting an unsafe merge. The full
+dev/test pipeline, permutation importance, and joint bootstrap for the
+headline contrasts all ran without errors. No synthetic data or its
+outputs are included in this folder or committed anywhere.
 
 ## Inputs
 
 - `data/processed/df_model_v2.parquet` (same cohort as Notebook 07)
-- `outputs/tables/b4_aipw_row_level_nuisance.csv` (optional — exact nuisance reuse if present locally)
-- `outputs/final_tables/final_aipw_overall_table.csv` (frozen primary result, for the consistency check)
-- `notebooks/v2/06_propensity_overlap_diagnostics.ipynb` (confounder set)
-- `notebooks/v2/07_aipw_primary_analysis.ipynb` (AIPW machinery reused via `../shared/utils.py`)
+- `outputs/tables/b4_aipw_row_level_nuisance.csv` (optional — only reused if a verified birth-level key validates a one_to_one merge)
+- `outputs/final_tables/final_aipw_overall_table.csv` (frozen primary result, for context)
+- `notebooks/v2/06_propensity_overlap_diagnostics.ipynb`, `notebooks/v2/07_aipw_primary_analysis.ipynb`
 
 ## Files produced
 
 - `notebook.ipynb`
-- `outputs/heterogeneity_individual_or_binned_summary.csv` — aggregate; predicted-CATE quintile bins + pre-specified subgroup rows, each with n, realized AIPW RD/RR, and bootstrap CI. No respondent-level rows.
-- `outputs/heterogeneity_modifier_summary.csv` — aggregate feature-importance-for-heterogeneity table.
-- `outputs/heterogeneity_distribution.png`
-- `outputs/heterogeneity_subgroups.png`
+- `outputs/heterogeneity_individual_or_binned_summary.csv` — now test-set only
+- `outputs/heterogeneity_modifier_summary.csv` — now permutation importance, aggregated by variable
+- `outputs/heterogeneity_headline_contrasts.csv` — **new**: joint/paired bootstrap for rural-vs-urban and Q5-vs-Q1
+- `outputs/heterogeneity_distribution.png`, `outputs/heterogeneity_subgroups.png`
 - `outputs/heterogeneity_metadata.json`
 
 ## QA / interpretation checks
 
-- No post-outcome or post-treatment variable is in the moderator set (asserted in the notebook).
-- The Stage-2 model's feature importances are for treatment-effect heterogeneity (fit on `tau_hat`), not ordinary outcome-prediction importance.
-- The Q1-vs-Q5 separation is large and non-overlapping; the Q3/Q4 near-tie is reported honestly as noise, not smoothed over or hidden.
-- Social group's lack of a clear effect is reported as a genuine null finding, not omitted.
-- Survey-weight and PSU-clustering treatment is documented in `outputs/heterogeneity_metadata.json`, including the limitation that bootstrap CIs are computed per bin on already-fitted nuisance/CATE models, not by re-running the full two-stage pipeline inside each replicate.
+- No post-outcome or post-treatment variable is in the moderator set (asserted).
+- Test set is never used to fit Stage 1, preprocessing, Stage 2, or bin thresholds — only to score them.
+- Feature importance is permutation-based, evaluated on test, aggregated by source variable.
+- The two headline contrasts have a genuine joint/paired-bootstrap CI for their difference, not an inference from marginal CI overlap.
+- The printed monotonicity verdict is reported as-is, not overridden by more confident prose.
 
 ## Limitations
 
-- This is exploratory adjusted-effect heterogeneity, not personalized causal truth, and inherits the primary AIPW analysis's selection-on-observables assumption — within every subgroup, not just overall (e.g. the rural-vs-urban difference assumes the same 8 confounders fully capture confounding *within* both rural and urban subpopulations, which is not separately tested).
-- `state_19`'s dominance is a strong empirical pattern, not an explanation — this notebook does not investigate *why* that state differs (e.g. specific regulation, private-sector penetration, local obstetric norms) and that would need separate, targeted follow-up (arguably overlapping with Extension 4's health-system-context scope).
-- PSU-bootstrap uncertainty does not propagate Stage-1/Stage-2 model-selection uncertainty (documented in the notebook and its metadata).
+- Test-set-only evaluation trades sample size (and rare-category stability) for full auditability; results come from one split, not independently replicated across splits.
+- The joint bootstrap for headline contrasts is conditional on the fixed, already-fitted Stage-1/Stage-2 models for this split — it does not refit the entire pipeline inside each replicate.
+- Permutation importance sums independently-shuffled dummy importances per variable, which approximates but isn't identical to jointly permuting all of a variable's dummies at once.
+- This remains exploratory adjusted-effect heterogeneity, not personalized causal truth, and inherits the primary AIPW analysis's selection-on-observables assumption.
