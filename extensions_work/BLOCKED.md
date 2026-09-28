@@ -2,14 +2,25 @@
 
 ## Extension 1 — Quantitative bias analysis
 
-**Status: RESOLVED — complete, run for real (repaired 2026-09-27 after an
-external implementation review; see CHANGELOG).** No data-access blocker
-ever applied here: this notebook runs entirely off `outputs/final_tables/`,
-already committed to the repository. The one remaining open item is
-non-blocking: every parameter in the notebook's Section 2 except the
-(sourced) multiparous fraction is a hypothetical placeholder and needs a
-real cited published estimate before the results are treated as final —
-see `01_quantitative_bias/README.md`.
+**Status: REOPENED — audited 2026-09-28; a fresh real-data run is required.**
+The audit found the notebook diluted both sectors' scenario prevalence by
+one *pooled* later-delivery share despite already computing that the
+sectors' shares differ substantially — fixed to use each sector's own
+share (see CHANGELOG), but not yet re-run against real data in this
+environment. A literature search for real, citable prevalence/risk-ratio
+parameters was attempted and **could not be completed**: full-text
+verification (WebFetch) is blocked for every domain tested in this
+session (PMC/NCBI, Springer, PLOS, medRxiv, ScienceDirect, general news,
+and Wikipedia as a control) — reported as a transparent negative finding,
+not filled with guessed values. See `01_quantitative_bias/README.md` for
+the evidence table, unverified candidate sources, and unresolved
+methodological decisions for a statistician. **Publication readiness is
+explicitly not promised.**
+
+**What's needed next:**
+1. Re-run `notebook.ipynb` where `data/processed/df_model_v2.parquet` exists, to get real numbers under the sector-specific-dilution fix.
+2. From an environment with normal (unblocked) web access, verify or refute the candidate sources listed in the README, or find better ones.
+3. Resolve the "Unresolved decisions for a statistician" in the README before treating this extension as contributing to the paper's robustness claims.
 
 ## Extension 2 — Causal heterogeneity / DR-learner
 

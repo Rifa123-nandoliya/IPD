@@ -1,5 +1,37 @@
 # Changelog — extensions_work (Extensions 1, 2, 3 & 5)
 
+## 2026-09-28 — Extension 1 statistician audit
+
+A full audit (code inspection, literature search, evidence classification,
+methodological verdict) of Extension 1, requested independently of the
+2026-09-27 review below. Findings and fixes:
+
+- **Real defect found and fixed:** the notebook already computed and
+  *reported* that public/private later-delivery (parity) shares differ
+  substantially, but still diluted both `p0` and `p1` by one **pooled**
+  share. Hand-calculation using the notebook's own numbers shows this
+  roughly halves the true sector-specific prevalence gap for the "mild"
+  scenario. Fixed: each arm is now diluted by its own sector's share.
+  Verified by a code-correctness smoke test against synthetic data (not
+  real results); a real re-run is still required for updated numbers.
+- **Literature search attempted, not completed.** WebFetch (full-text
+  verification) was blocked for every domain tested in this environment
+  (PMC/NCBI, Springer, PLOS, medRxiv, ScienceDirect, general news, and
+  Wikipedia as a control). Candidate sources were identified via search
+  snippets only and are listed in the README as unverified leads, not
+  citations. Reported as a transparent negative finding rather than filled
+  with unsourced guesses, per this audit's explicit decision rule.
+- **Cleanup:** removed a stray `extensions_work.zip` committed at the repo
+  root, duplicate/backup README and notebook files
+  (`README.before_*.md`, `notebook.before_*.ipynb`, a duplicated
+  `final_aipw_overall_table.csv` inside the extension folder), and
+  consolidated three README variants into one canonical `README.md`.
+- **Verdict:** publication readiness is not promised. Both the evidence
+  gap (no sourced QBA parameters) and part of the bias-factor method's own
+  validity conditions (independence/homogeneity of the unmeasured factor
+  relative to the 8 measured confounders) remain open — see the README's
+  "Unresolved decisions for a statistician."
+
 ## 2026-09-27 — Repairs following an external implementation review
 
 An external review of the submitted `extensions_work.zip` and its saved
